@@ -45,7 +45,7 @@ zh-CN:
       deposit: 充值
       withdraw: 提现
       currency_name:
-        cny: CNY
+        usd: USD
         btc: BTC
       deposit_cny:
         title: 人民币充值
@@ -159,5 +159,5 @@ zh-CN:
     markets:
       market_list:
         all: 全部交易对
-        cny: CNY交易对
+        usd: USD交易对
         btc: BTC交易对

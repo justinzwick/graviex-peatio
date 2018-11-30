@@ -1,4 +1,4 @@
-GRAVIEX Exchange - cryptocurrency exchange
+ZENBITEX Exchange - cryptocurrency exchange
 ==========================================
 ### Features
 
@@ -40,5 +40,5 @@ GRAVIEX Exchange - cryptocurrency exchange
 
 You can interact with Peatio through API:
 
-* [API v2](https://graviex.net/documents/api_v2?lang=en)
-* [Websocket API](https://graviex.net/documents/websocket_api)
+* [API v2](http://zenbitex.com/documents/api_v2?lang=en)
+* [Websocket API](http://zenbitex.com/documents/websocket_api)

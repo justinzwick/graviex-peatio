@@ -24,7 +24,7 @@ class ListingRequestsController < ApplicationController
     end
 
     if listing_request_params && listing_request_params_present
-      address  = CoinRPC[:gio].getnewaddress("payment", "")
+      address  = CoinRPC[:zbx].getnewaddress("payment", "")
       Rails.logger.info "Listing req new address " + address
       @listing_request.address = address
       @listing_request.save
@@ -54,7 +54,7 @@ class ListingRequestsController < ApplicationController
     end
 
     if listing_request_params && listing_request_params_present
-      address  = CoinRPC[:gio].getnewaddress("payment", "")
+      address  = CoinRPC[:zbx].getnewaddress("payment", "")
       Rails.logger.info "Listing req new address " + address
       @listing_request.address = address
       @listing_request.update address: address

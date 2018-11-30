@@ -1,5 +1,5 @@
 module Withdraws
-  class Gravio < ::Withdraw
+  class Zenbitex < ::Withdraw
     include ::AasmAbsolutely
     include ::Withdraws::Coinable
     include ::FundSourceable

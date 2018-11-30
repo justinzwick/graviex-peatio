@@ -1,5 +1,5 @@
 module Deposits
-  class Gravio < ::Deposit
+  class Zenbitex < ::Deposit
     include ::AasmAbsolutely
     include ::Deposits::Coinable
 

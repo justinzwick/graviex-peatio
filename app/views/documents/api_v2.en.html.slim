@@ -9,7 +9,7 @@
     h3 Public/Private API
 
   .panel-body
-    p GRAVIEX API v2 includes both public API and private API.
+    p ZENBITEX API v2 includes both public API and private API.
 
   table.table
     thead
@@ -22,7 +22,7 @@
         td Authentication required
       tr
         td Unlimited
-        td 6000 requests/keypair/5minutes, you can contact GRAVIEX if you need more.
+        td 6000 requests/keypair/5minutes, you can contact ZENBITEX if you need more.
       tr
         td Ready to use
         td You need to request for access/secret key at first
@@ -67,20 +67,20 @@
 
     p Now we hav a signed request which can be used like this:
     pre: code
-      | curl -X GET 'https://graviex.net/api/v2/markets?access_key=xxx&foo=bar&tonce=123456789&signature=e324059be4491ed8e528aa7b8735af1e96547fbec96db962d51feb7bf1b64dee'
+      | curl -X GET 'http://zenbitex.com/api/v2/markets?access_key=xxx&foo=bar&tonce=123456789&signature=e324059be4491ed8e528aa7b8735af1e96547fbec96db962d51feb7bf1b64dee'
 
 .panel.panel-default
   .panel-heading
     h3 Response Format
 
   .panel-body
-    p Corresponding HTTP status code will be used in API response. GRAVIEX will also return a JSON structure including error details on failed request, for example:
+    p Corresponding HTTP status code will be used in API response. ZENBITEX will also return a JSON structure including error details on failed request, for example:
     pre: code
       | {"error":{"code":1001,"message":"market does not have a valid value"}}
-    p All errors follow the message format above, only differentiates in code and message. Code is a GRAVIEX defined error code, indicates the error's category, message is human-readable details.
+    p All errors follow the message format above, only differentiates in code and message. Code is a ZENBITEX defined error code, indicates the error's category, message is human-readable details.
 
   .panel-body
-    p GRAVIEX returns HTTP 200 response on successful request, with requested data in JSON format.
+    p ZENBITEX returns HTTP 200 response on successful request, with requested data in JSON format.
     table.table.result
       thead
         tr
@@ -156,11 +156,11 @@
   .panel-body
     p Buy 1BTC at price 10000USD:
     pre: code
-      | curl -X POST 'https://graviex.net/api/v2/orders' -d 'access_key=your_access_key&tonce=1234567&signature=computed_signature&market=btcusd&price=10000&side=buy&volume=1'
+      | curl -X POST 'http://zenbitex.com/api/v2/orders' -d 'access_key=your_access_key&tonce=1234567&signature=computed_signature&market=btcusd&price=10000&side=buy&volume=1'
 
     p Create multiple orders with a single request:
     pre: code
-      | curl -X POST 'https://graviex.net/api/v2/orders/multi' -d 'access_key=your_access_key&tonce=123456789&signature=computed_signature&market=btcusd&orders[][price]=10000&orders[][side]=sell&orders[][volume]=0.5&orders[][price]=3999&orders[][side]=sell&orders[][volume]=0.99'
+      | curl -X POST 'http://zenbitex.com/api/v2/orders/multi' -d 'access_key=your_access_key&tonce=123456789&signature=computed_signature&market=btcusd&orders[][price]=10000&orders[][side]=sell&orders[][volume]=0.5&orders[][price]=3999&orders[][side]=sell&orders[][volume]=0.99'
 
     p Python script with markets and put order sample:
     pre: code
@@ -196,7 +196,7 @@
         ).hexdigest()
         
         # 1.2 list markets
-        query = 'https://graviex.net/api/v2/markets?' + request + '&signature=' + signature
+        query = 'http://zenbitex.com/api/v2/markets?' + request + '&signature=' + signature
         content = urllib2.urlopen(query, context=ctx).read()
         print(content)
         
@@ -207,7 +207,7 @@
         # 2. put order
         epoch_time = str(int(time.time())) + '001' # tonce should be different from previous one
         
-        request = 'access_key=' + access_key + '&market=giobtc&price=0.000000042&side=sell' + '&tonce=' + epoch_time + '&volume=100.0'
+        request = 'access_key=' + access_key + '&market=zbxbtc&price=0.000000042&side=sell' + '&tonce=' + epoch_time + '&volume=100.0'
         message = 'POST|/api/v2/orders|' + request
         
         # 2.1 generate the hash.
@@ -218,7 +218,7 @@
         ).hexdigest()
         
         # 2.2 put order
-        query = 'https://graviex.net/api/v2/orders?' + request
+        query = 'http://zenbitex.com/api/v2/orders?' + request
         result = urllib2.Request(query, urllib.urlencode({'signature' : signature})) #there is a trick - we need a POST request, thats why urlencode used
         content = urllib2.urlopen(result, context=ctx).read()
         print(content)

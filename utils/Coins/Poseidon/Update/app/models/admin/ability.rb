@@ -18,7 +18,7 @@ module Admin
       can :menu, Deposit
       can :manage, ::Deposits::Bank
       can :manage, ::Deposits::Satoshi
-      can :manage, ::Deposits::Gravio
+      can :manage, ::Deposits::Zenbitex
       can :manage, ::Deposits::Doge
       can :manage, ::Deposits::Ltc
       can :manage, ::Deposits::Ether
@@ -28,7 +28,7 @@ module Admin
       can :menu, Withdraw
       can :manage, ::Withdraws::Bank
       can :manage, ::Withdraws::Satoshi
-      can :manage, ::Withdraws::Gravio
+      can :manage, ::Withdraws::Zenbitex
       can :manage, ::Withdraws::Doge
       can :manage, ::Withdraws::Ltc
       can :manage, ::Withdraws::Ether

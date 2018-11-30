@@ -16,7 +16,7 @@ class Withdraw extends PeatioModel.Model
 
   pathName: ->
     switch @currency
-      when 'gio' then 'gravios'
+      when 'zbx' then 'zenbitexs'
       when 'btc' then 'satoshis'
       when 'doge' then 'doges'
       when 'ltc' then 'ltcs'

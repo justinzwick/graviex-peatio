@@ -157,7 +157,7 @@ class Account < ActiveRecord::Base
     return unless member
 
     json = Jbuilder.encode do |json|
-      json.(self, :balance, :locked, :currency, :is_online, :blocks, :headers, :blocktime, :gio_discount, :coin_home, :coin_btt, :coin_be)
+      json.(self, :balance, :locked, :currency, :is_online, :blocks, :headers, :blocktime, :zbx_discount, :coin_home, :coin_btt, :coin_be)
     end
     member.trigger('account', json)
   end
@@ -190,8 +190,8 @@ class Account < ActiveRecord::Base
     currency_obj.blocktime
   end
 
-  def gio_discount
-    member.has_gio_deposite_50
+  def zbx_discount
+    member.has_zbx_deposite_50
   end
 
   def change_balance_and_locked(delta_b, delta_l)
@@ -219,7 +219,7 @@ class Account < ActiveRecord::Base
       "blocks" => currency_obj.blocks,
       "headers" => currency_obj.headers,
       "blocktime" => currency_obj.blocktime,
-      "gio_discount" => member.has_gio_deposite_50,
+      "zbx_discount" => member.has_zbx_deposite_50,
       # "coin_home" => currency_obj.home,
       # "coin_btt" => currency_obj.btt,
       # "coin_be" => currency_obj.be
@@ -229,7 +229,7 @@ class Account < ActiveRecord::Base
   private
 
   def sync_update
-    ::Pusher["private-#{member.sn}"].trigger_async('accounts', { type: 'update', id: self.id, attributes: {balance: balance, locked: locked, gio_discount: member.has_gio_deposite_50} })
+    ::Pusher["private-#{member.sn}"].trigger_async('accounts', { type: 'update', id: self.id, attributes: {balance: balance, locked: locked, zbx_discount: member.has_zbx_deposite_50} })
   end
 
 end

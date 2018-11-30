@@ -55,4 +55,4 @@ If you run bitcoind at local, the necessary hard drive space largely depends on 
 
 ## Support
 
-Any Questions: [community@graviex.net](mailto:community@graviex.net)
+Any Questions: [community@zenbitex.com](mailto:community@zenbitex.com)

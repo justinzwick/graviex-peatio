@@ -10,8 +10,8 @@
             .col-xs-offset-4.col-xs-16
               span.pull-left = t('.total')
               span.pull-right
-                == t("currency.icon.gio")
-                = @gio_proof.asset_sum
+                == t("currency.icon.zbx")
+                = @zbx_proof.asset_sum
           .clearfix
           .row
             table.table
@@ -22,9 +22,9 @@
                   td
                     = t('.balance')
               tbody
-                - @gio_proof.addresses.each do |entry|
+                - @zbx_proof.addresses.each do |entry|
                   tr
                     td
-                      = link_to entry['address'], @gio_proof.address_url(entry['address'])
+                      = link_to entry['address'], @zbx_proof.address_url(entry['address'])
                     td
                       = entry['balance']

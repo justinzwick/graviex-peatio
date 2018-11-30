@@ -1,5 +1,5 @@
 FROM phusion/passenger-full
-MAINTAINER PEATIO community@graviex.net
+MAINTAINER PEATIO community@zenbitex.com
 
 # Set correct environment variables.
 ENV HOME /root

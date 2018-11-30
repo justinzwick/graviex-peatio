@@ -5,13 +5,13 @@
 
 cs:
   js:
-    brand: GRAVIEX
+    brand: ZENBITEX
     submit: Odeslat
     funds:
       deposit: Vklad
       withdraw: Výběr
       currency_name:
-        cny: CNY
+        usd: USD
         btc: BTC
       deposit_cny:
         title: Vložit Čínský Yuan

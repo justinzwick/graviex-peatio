@@ -46,7 +46,7 @@ while($running) do
       product.dividends.each do |dividend|
          $stdout.print "hour process dividend for member " + dividend[:member_id].to_s + "\n"
          #member = Member.find_by_id dividend[:member_id]
-         #gio_account = member.accounts.with_currency(:gio).first
+         #zbx_account = member.accounts.with_currency(:zbx).first
          account = dividend.asset
          if account
            #$stdout.print "test " + product.amount.to_s + "\n"

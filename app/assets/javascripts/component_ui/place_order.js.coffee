@@ -137,18 +137,18 @@
     else
       fee = gon.market.bid.fee
 
-    gio_discount_flag = -1
+    zbx_discount_flag = -1
 
     if gon.accounts != undefined
-      gio_account = gon.accounts['gio']
-      if gio_account.hasOwnProperty('gio_discount')
-        if gio_account.gio_discount == true
-          gio_discount_flag = 1
-        if gio_account.gio_discount == false
-          gio_discount_flag = 0
+      zbx_account = gon.accounts['zbx']
+      if zbx_account.hasOwnProperty('zbx_discount')
+        if zbx_account.zbx_discount == true
+          zbx_discount_flag = 1
+        if zbx_account.zbx_discount == false
+          zbx_discount_flag = 0
 
     fee_actual_percent = fee
-    if gio_discount_flag == 1
+    if zbx_discount_flag == 1
       fee_actual_percent = fee / 2.0
 
     if order.hasOwnProperty('total')
@@ -158,7 +158,7 @@
 
     order.fee_percent = fee * 100.0
     order.fee_actual_percent = fee_actual_percent * 100.0
-    order.gio_discount_flag = gio_discount_flag
+    order.zbx_discount_flag = zbx_discount_flag
 
     if @select('priceSel').val() != 0.0 && @select('priceSel').val() != ''
       @select('feeLabelSel').hide().text(formatter.fixPriceGroup(order.fee)).fadeIn()
@@ -167,7 +167,7 @@
       @select('feeLabelSel').fadeOut().text('')
       @select('feeLabelInfo').fadeOut().text('')
 
-    if order.gio_discount_flag == 1
+    if order.zbx_discount_flag == 1
       @select('feeLabelDiscountInfo').fadeOut().text('')
     else
       @select('feeLabelDiscountInfo').hide().text('how to get 50% market fee discount').fadeIn()

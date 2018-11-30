@@ -1,9 +1,10 @@
 development: &defaults
   adapter: mysql2
   encoding: utf8
+  host: 178.128.121.71
   database: peatio_development
-  username: root
-  password:
+  username: admin
+  password: P3gajahan
   pool: 10
   reconnect: true
 

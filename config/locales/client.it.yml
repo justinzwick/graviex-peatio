@@ -5,13 +5,13 @@
 
 it:
   js:
-    brand: GRAVIEX
+    brand: ZENBITEX
     submit: Immetti
     funds:
       deposit: Deposita
       withdraw: Preleva
       currency_name:
-        cny: CNY
+        usd: USD
         btc: BTC
       deposit_cny:
         title: Deposito in Yuan Cinesi
@@ -122,4 +122,4 @@ it:
       send_code_alt: Reinvia in COUNT secondi
       hints:
         app: Google Authenticator genererà una nuova password ogni 30 secondi, per favore inseriscila in tempo.
-        sms: Invieremo un messaggio di testo sul tuo telefono con il codice di verifica.
+        sms: Invieremo un messagzbx di testo sul tuo telefono con il codice di verifica.

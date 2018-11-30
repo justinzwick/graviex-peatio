@@ -251,13 +251,13 @@ Processing by SessionsController#create as HTML
   [1m[35mMember Load (0.4ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36m (0.2ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1[0m
   [1m[35m (0.2ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1
-Redirected to http://140.82.58.38:3000/markets/btccny
+Redirected to http://140.82.58.38:3000/markets/btcusd
 Completed 302 Found in 62ms (ActiveRecord: 7.5ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 06:32:19 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 06:32:19 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (0.4ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (0.5ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
   [1m[36mMember Load (0.3ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1[0m
@@ -304,7 +304,7 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 302ms (Views: 214.0ms | ActiveRecord: 5.7ms)
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 06:32:21 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 06:32:21 +0000
 
 
 Started POST "/pusher/auth" for 2.38.199.118 at 2018-06-09 06:32:22 +0000
@@ -474,9 +474,9 @@ Processing by Private::PusherController#auth as */*
 Completed 200 OK in 38ms (Views: 0.2ms | ActiveRecord: 3.8ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 06:32:38 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 06:32:38 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (0.4ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mAccount Load (0.4ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1[0m
   [1m[35mMember Load (0.2ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1
@@ -523,7 +523,7 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 74ms (Views: 41.0ms | ActiveRecord: 2.9ms)
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 06:32:39 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 06:32:39 +0000
 
 
 Started POST "/pusher/auth" for 2.38.199.118 at 2018-06-09 06:32:40 +0000
@@ -1730,9 +1730,9 @@ Processing by Private::HistoryController#orders as HTML
 Completed 200 OK in 73ms (Views: 39.8ms | ActiveRecord: 4.4ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 08:26:57 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 08:26:57 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (0.4ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (0.4ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
   [1m[36mMember Load (0.3ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1[0m
@@ -1835,13 +1835,13 @@ Processing by SessionsController#create as HTML
   [1m[35mMember Load (0.4ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36m (0.4ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1[0m
   [1m[35m (0.5ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1
-Redirected to http://140.82.58.38:3000/markets/btccny
+Redirected to http://140.82.58.38:3000/markets/btcusd
 Completed 302 Found in 57ms (ActiveRecord: 4.8ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 12:12:44 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 12:12:44 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (0.4ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (0.7ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
   [1m[36mMember Load (0.4ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1[0m
@@ -1888,9 +1888,9 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 123ms (Views: 85.1ms | ActiveRecord: 5.0ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 12:12:50 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 12:12:50 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (0.5ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35m (0.5ms)[0m  SELECT SUM(`trades`.`volume`) AS sum_id FROM `trades` WHERE `trades`.`currency` = 3 AND (created_at > '2018-06-08 12:12:50')
   [1m[36m (0.4ms)[0m  [1mSELECT SUM(volume * price) AS sum_id FROM `trades` WHERE `trades`.`currency` = 3 AND (created_at > '2018-06-08 12:12:50')[0m
@@ -2376,9 +2376,9 @@ Processing by TwoFactorsController#show as HTML
 Completed 200 OK in 46ms (Views: 0.5ms | ActiveRecord: 3.4ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 12:13:21 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 12:13:21 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (0.4ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mAccount Load (0.7ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1[0m
   [1m[35mMember Load (0.5ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1
@@ -2425,9 +2425,9 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 82ms (Views: 39.2ms | ActiveRecord: 4.0ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 12:13:32 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 12:13:32 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (0.5ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mCACHE (0.0ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mCACHE (0.0ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1
@@ -2461,10 +2461,10 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 62ms (Views: 42.2ms | ActiveRecord: 0.6ms)
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 12:13:32 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 12:13:32 +0000
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 12:13:34 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 12:13:34 +0000
 
 
 Started GET "/" for 2.38.199.118 at 2018-06-09 12:13:43 +0000
@@ -2508,9 +2508,9 @@ Processing by WelcomeController#index as HTML
 Completed 200 OK in 66ms (Views: 37.3ms | ActiveRecord: 2.0ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 16:26:55 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 16:26:55 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (0.3ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36m (0.3ms)[0m  [1mSELECT SUM(`trades`.`volume`) AS sum_id FROM `trades` WHERE `trades`.`currency` = 3 AND (created_at > '2018-06-08 16:26:55')[0m
   [1m[35m (0.3ms)[0m  SELECT SUM(volume * price) AS sum_id FROM `trades` WHERE `trades`.`currency` = 3 AND (created_at > '2018-06-08 16:26:55')
@@ -2546,9 +2546,9 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 63ms (Views: 42.2ms | ActiveRecord: 1.2ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 16:27:04 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 16:27:04 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (0.5ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mCACHE (0.0ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mCACHE (0.0ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1[0m
@@ -2582,10 +2582,10 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 53ms (Views: 36.0ms | ActiveRecord: 0.7ms)
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 16:27:06 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 16:27:06 +0000
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 16:27:06 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 2.38.199.118 at 2018-06-09 16:27:06 +0000
 
 
 Started GET "/" for 2.38.199.118 at 2018-06-09 16:40:01 +0000
@@ -2691,13 +2691,13 @@ Processing by SessionsController#create as HTML
   [1m[35mMember Load (0.7ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36m (0.6ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1[0m
   [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1
-Redirected to http://140.82.58.38:3000/markets/btccny
+Redirected to http://140.82.58.38:3000/markets/btcusd
 Completed 302 Found in 46ms (ActiveRecord: 8.0ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 16:48:07 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 16:48:07 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (0.6ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (0.6ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
   [1m[36mMember Load (0.3ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1[0m
@@ -3436,9 +3436,9 @@ Processing by Private::HistoryController#orders as HTML
 Completed 200 OK in 69ms (Views: 36.1ms | ActiveRecord: 4.3ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 16:55:03 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 16:55:03 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (0.5ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mAccount Load (0.5ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1[0m
   [1m[35mMember Load (0.3ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1
@@ -3485,9 +3485,9 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 104ms (Views: 56.7ms | ActiveRecord: 5.3ms)
 
 
-Started GET "/markets/btccny" for 35.231.187.179 at 2018-06-09 16:55:09 +0000
+Started GET "/markets/btcusd" for 35.231.187.179 at 2018-06-09 16:55:09 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (0.3ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mCACHE (0.0ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mCACHE (0.0ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1
@@ -4865,13 +4865,13 @@ Processing by SessionsController#create as HTML
   [1m[35mMember Load (0.6ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36m (0.4ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1[0m
   [1m[35m (0.3ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1
-Redirected to http://140.82.58.38:3000/markets/btccny
+Redirected to http://140.82.58.38:3000/markets/btcusd
 Completed 302 Found in 102ms (ActiveRecord: 8.8ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-09 18:44:38 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-09 18:44:38 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (0.5ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (0.5ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
   [1m[36mMember Load (0.6ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1[0m
@@ -6590,7 +6590,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :intraday_d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:12)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:12)
 DEPRECATION WARNING: The following options in your Dividend.has_many :daily_dividends declaration are deprecated: :order. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -6598,7 +6598,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :daily_divi
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:13)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:13)
 DEPRECATION WARNING: The following options in your Product.has_many :dividends declaration are deprecated: :conditions. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -6606,7 +6606,7 @@ DEPRECATION WARNING: The following options in your Product.has_many :dividends d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Product> at /home/deploy/graviex/app/models/product.rb:3)
+. (called from <class:Product> at /home/deploy/zenbitex/app/models/product.rb:3)
 Processing by SessionsController#new as HTML
   [1m[35mMember Load (0.9ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mCACHE (0.0ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` IS NULL ORDER BY `members`.`id` ASC LIMIT 1[0m
@@ -6648,13 +6648,13 @@ Processing by SessionsController#create as HTML
   [1m[36mMember Load (1.0ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35m (0.7ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1
   [1m[36m (0.5ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1[0m
-Redirected to http://140.82.58.38:3000/markets/btccny
+Redirected to http://140.82.58.38:3000/markets/btcusd
 Completed 302 Found in 111ms (ActiveRecord: 16.3ms)
 
 
-Started GET "/markets/btccny" for 157.38.201.108 at 2018-06-10 07:48:18 +0000
+Started GET "/markets/btcusd" for 157.38.201.108 at 2018-06-10 07:48:18 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (1.1ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mAccount Load (0.5ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1[0m
   [1m[35mMember Load (0.5ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1
@@ -6700,22 +6700,22 @@ Processing by Private::MarketsController#show as HTML
   Rendered private/markets/show.html.slim (301.8ms)
 Completed 200 OK in 459ms (Views: 303.5ms | ActiveRecord: 13.2ms)
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
 
-Started GET "/markets/btccny?pinned=[FILTERED]" for 157.38.201.108 at 2018-06-10 07:48:22 +0000
+Started GET "/markets/btcusd?pinned=[FILTERED]" for 157.38.201.108 at 2018-06-10 07:48:22 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"pinned"=>"[FILTERED]", "id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"pinned"=>"[FILTERED]", "id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (0.8ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mAccount Load (1.0ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1[0m
   [1m[35mMember Load (0.8ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1
@@ -6763,54 +6763,54 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 203ms (Views: 90.5ms | ActiveRecord: 16.4ms)
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 157.38.201.108 at 2018-06-10 07:48:22 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 157.38.201.108 at 2018-06-10 07:48:22 +0000
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff2"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff2"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 157.38.201.108 at 2018-06-10 07:48:26 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 157.38.201.108 at 2018-06-10 07:48:26 +0000
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
@@ -6839,13 +6839,13 @@ Processing by Private::PusherController#auth as */*
   [1m[35m (4.2ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1
 Completed 200 OK in 119ms (Views: 0.2ms | ActiveRecord: 30.4ms)
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff2"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff2"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
@@ -7918,13 +7918,13 @@ Processing by SessionsController#create as HTML
   [1m[35mMember Load (0.7ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36m (0.8ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1[0m
   [1m[35m (0.5ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1
-Redirected to http://140.82.58.38:3000/markets/btccny
+Redirected to http://140.82.58.38:3000/markets/btcusd
 Completed 302 Found in 123ms (ActiveRecord: 14.4ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-10 12:49:48 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-10 12:49:48 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (1.5ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (1.6ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
   [1m[36mMember Load (0.9ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1[0m
@@ -10913,13 +10913,13 @@ Processing by SessionsController#create as HTML
   [1m[35mMember Load (0.6ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36m (0.5ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1[0m
   [1m[35m (0.8ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1
-Redirected to http://140.82.58.38:3000/markets/btccny
+Redirected to http://140.82.58.38:3000/markets/btcusd
 Completed 302 Found in 44ms (ActiveRecord: 6.9ms)
 
 
-Started GET "/markets/btccny" for 150.129.183.201 at 2018-06-10 13:04:26 +0000
+Started GET "/markets/btcusd" for 150.129.183.201 at 2018-06-10 13:04:26 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (0.5ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (0.7ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
   [1m[36mMember Load (0.6ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1[0m
@@ -10966,9 +10966,9 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 126ms (Views: 64.1ms | ActiveRecord: 7.5ms)
 
 
-Started GET "/markets/btccny?pinned=[FILTERED]" for 150.129.183.201 at 2018-06-10 13:04:29 +0000
+Started GET "/markets/btcusd?pinned=[FILTERED]" for 150.129.183.201 at 2018-06-10 13:04:29 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"pinned"=>"[FILTERED]", "id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"pinned"=>"[FILTERED]", "id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[36mMember Load (0.7ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (0.6ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
   [1m[36mMember Load (2.4ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1[0m
@@ -11016,60 +11016,60 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 113ms (Views: 46.6ms | ActiveRecord: 6.6ms)
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 150.129.183.201 at 2018-06-10 13:04:29 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 150.129.183.201 at 2018-06-10 13:04:29 +0000
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff2"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff2"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 150.129.183.201 at 2018-06-10 13:04:35 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 150.129.183.201 at 2018-06-10 13:04:35 +0000
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
@@ -11098,7 +11098,7 @@ Processing by Private::PusherController#auth as */*
   [1m[36m (0.8ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1[0m
 Completed 200 OK in 65ms (Views: 0.2ms | ActiveRecord: 6.1ms)
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff2"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff2"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
@@ -14817,7 +14817,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :intraday_d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:12)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:12)
 DEPRECATION WARNING: The following options in your Dividend.has_many :daily_dividends declaration are deprecated: :order. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -14825,7 +14825,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :daily_divi
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:13)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:13)
 DEPRECATION WARNING: The following options in your Product.has_many :dividends declaration are deprecated: :conditions. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -14833,7 +14833,7 @@ DEPRECATION WARNING: The following options in your Product.has_many :dividends d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Product> at /home/deploy/graviex/app/models/product.rb:3)
+. (called from <class:Product> at /home/deploy/zenbitex/app/models/product.rb:3)
 Processing by Private::FundsController#index as HTML
   [1m[36mMember Load (8.4ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (0.7ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
@@ -19528,13 +19528,13 @@ Processing by SessionsController#create as HTML
   [1m[36mMember Load (0.6ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35m (0.8ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1
   [1m[36m (0.6ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1[0m
-Redirected to http://140.82.58.38:3000/markets/btccny
+Redirected to http://140.82.58.38:3000/markets/btcusd
 Completed 302 Found in 194ms (ActiveRecord: 34.1ms)
 
 
-Started GET "/markets/btccny" for 150.129.183.201 at 2018-06-10 16:37:54 +0000
+Started GET "/markets/btcusd" for 150.129.183.201 at 2018-06-10 16:37:54 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (1.2ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mAccount Load (0.6ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1[0m
   [1m[35mMember Load (0.4ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1
@@ -19580,22 +19580,22 @@ Processing by Private::MarketsController#show as HTML
   Rendered private/markets/show.html.slim (361.5ms)
 Completed 200 OK in 488ms (Views: 365.0ms | ActiveRecord: 8.9ms)
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
 
-Started GET "/markets/btccny?pinned=[FILTERED]" for 150.129.183.201 at 2018-06-10 16:37:59 +0000
+Started GET "/markets/btcusd?pinned=[FILTERED]" for 150.129.183.201 at 2018-06-10 16:37:59 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"pinned"=>"[FILTERED]", "id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"pinned"=>"[FILTERED]", "id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (0.8ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mAccount Load (1.0ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1[0m
   [1m[35mMember Load (0.9ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1
@@ -19643,46 +19643,46 @@ Processing by Private::MarketsController#show as HTML
 Completed 200 OK in 192ms (Views: 80.9ms | ActiveRecord: 18.4ms)
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 150.129.183.201 at 2018-06-10 16:37:59 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 150.129.183.201 at 2018-06-10 16:37:59 +0000
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff2"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff2"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.ttf"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.ttf"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
 
-Started GET "/api/v2/k_with_pending_trades.json?market=btccny&limit=768&period=60&trade_id=0" for 150.129.183.201 at 2018-06-10 16:38:04 +0000
+Started GET "/api/v2/k_with_pending_trades.json?market=btcusd&limit=768&period=60&trade_id=0" for 150.129.183.201 at 2018-06-10 16:38:04 +0000
 
 
 Started POST "/pusher/auth" for 150.129.183.201 at 2018-06-10 16:38:05 +0000
@@ -19709,25 +19709,25 @@ Processing by Private::PusherController#auth as */*
   [1m[35m (0.6ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1
 Completed 200 OK in 73ms (Views: 0.2ms | ActiveRecord: 8.0ms)
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-regular.woff2"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-regular.woff2"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
 
 
-ActionController::RoutingError (No route matches [GET] "/assets/graviex-mono-bold.woff"):
+ActionController::RoutingError (No route matches [GET] "/assets/zenbitex-mono-bold.woff"):
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
 
@@ -20177,7 +20177,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :intraday_d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:12)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:12)
 DEPRECATION WARNING: The following options in your Dividend.has_many :daily_dividends declaration are deprecated: :order. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -20185,7 +20185,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :daily_divi
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:13)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:13)
 DEPRECATION WARNING: The following options in your Product.has_many :dividends declaration are deprecated: :conditions. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -20193,7 +20193,7 @@ DEPRECATION WARNING: The following options in your Product.has_many :dividends d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Product> at /home/deploy/graviex/app/models/product.rb:3)
+. (called from <class:Product> at /home/deploy/zenbitex/app/models/product.rb:3)
 Processing by Admin::DashboardController#index as HTML
   [1m[35mMember Load (0.9ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mAccount Load (1.0ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1[0m
@@ -20360,13 +20360,13 @@ Processing by SessionsController#create as HTML
   [1m[36mMember Load (0.6ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35m (0.6ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1
   [1m[36m (0.5ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1[0m
-Redirected to http://140.82.58.38:3000/markets/btccny
+Redirected to http://140.82.58.38:3000/markets/btcusd
 Completed 302 Found in 175ms (ActiveRecord: 37.2ms)
 
 
-Started GET "/markets/btccny" for 2.38.199.118 at 2018-06-10 16:58:02 +0000
+Started GET "/markets/btcusd" for 2.38.199.118 at 2018-06-10 16:58:02 +0000
 Processing by Private::MarketsController#show as HTML
-  Parameters: {"id"=>"btccny", "market"=>"btccny", "ask"=>"btc", "bid"=>"cny"}
+  Parameters: {"id"=>"btcusd", "market"=>"btcusd", "ask"=>"btc", "bid"=>"usd"}
   [1m[35mMember Load (1.0ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36mAccount Load (0.8ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1[0m
   [1m[35mMember Load (0.9ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1
@@ -23432,7 +23432,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :intraday_d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:12)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:12)
 DEPRECATION WARNING: The following options in your Dividend.has_many :daily_dividends declaration are deprecated: :order. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -23440,7 +23440,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :daily_divi
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:13)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:13)
   [1m[35mDividend Load (1.7ms)[0m  SELECT `dividends`.* FROM `dividends` WHERE `dividends`.`member_id` = 1 LIMIT 1
   [1m[36mAccount Load (1.1ms)[0m  [1mSELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1 AND `accounts`.`currency` = 3 ORDER BY `accounts`.`id` ASC LIMIT 1[0m
   [1m[35mCACHE (0.0ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1  [["id", 1]]
@@ -23460,13 +23460,13 @@ DEPRECATION WARNING: The following options in your Product.has_many :dividends d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Product> at /home/deploy/graviex/app/models/product.rb:3)
+. (called from <class:Product> at /home/deploy/zenbitex/app/models/product.rb:3)
   [1m[35mProduct Load (0.7ms)[0m  SELECT `products`.* FROM `products` WHERE `products`.`name` = 'default' ORDER BY `products`.`id` ASC LIMIT 1
   [1m[36m (0.6ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1[0m
   [1m[35m (0.6ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1
 Completed 500 Internal Server Error in 447ms
 
-Psych::SyntaxError ((/home/deploy/graviex/config/withdraw_channels.yml): did not find expected key while parsing a block mapping at line 25 column 3):
+Psych::SyntaxError ((/home/deploy/zenbitex/config/withdraw_channels.yml): did not find expected key while parsing a block mapping at line 25 column 3):
   app/controllers/private/funds_controller.rb:12:in `index'
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
@@ -24372,13 +24372,13 @@ Exiting
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/active_hash-1.3.0/lib/active_hash/base.rb:75:in `data='
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/active_hash-1.3.0/lib/active_file/base.rb:22:in `reload'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/active_hash-1.3.0/lib/active_file/base.rb:55:in `block (2 levels) in singleton class'
-	from /home/deploy/graviex/app/models/currency.rb:18:in `enumerize'
-	from /home/deploy/graviex/app/models/concerns/currencible.rb:6:in `block in <module:Currencible>'
+	from /home/deploy/zenbitex/app/models/currency.rb:18:in `enumerize'
+	from /home/deploy/zenbitex/app/models/concerns/currencible.rb:6:in `block in <module:Currencible>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/concern.rb:114:in `class_eval'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/concern.rb:114:in `append_features'
-	from /home/deploy/graviex/app/models/deposit.rb:8:in `include'
-	from /home/deploy/graviex/app/models/deposit.rb:8:in `<class:Deposit>'
-	from /home/deploy/graviex/app/models/deposit.rb:1:in `<top (required)>'
+	from /home/deploy/zenbitex/app/models/deposit.rb:8:in `include'
+	from /home/deploy/zenbitex/app/models/deposit.rb:8:in `<class:Deposit>'
+	from /home/deploy/zenbitex/app/models/deposit.rb:1:in `<top (required)>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:424:in `load'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:424:in `block in load_file'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:616:in `new_constants_in'
@@ -24395,8 +24395,8 @@ Exiting
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rails-observers-0.1.2/lib/rails/observers/active_model/observing.rb:309:in `block in observe'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rails-observers-0.1.2/lib/rails/observers/active_model/observing.rb:309:in `collect!'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rails-observers-0.1.2/lib/rails/observers/active_model/observing.rb:309:in `observe'
-	from /home/deploy/graviex/app/observers/transfer_observer.rb:2:in `<class:TransferObserver>'
-	from /home/deploy/graviex/app/observers/transfer_observer.rb:1:in `<top (required)>'
+	from /home/deploy/zenbitex/app/observers/transfer_observer.rb:2:in `<class:TransferObserver>'
+	from /home/deploy/zenbitex/app/observers/transfer_observer.rb:1:in `<top (required)>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:424:in `load'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:424:in `block in load_file'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:616:in `new_constants_in'
@@ -24442,16 +24442,16 @@ Exiting
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/initializable.rb:54:in `run_initializers'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/application.rb:215:in `initialize!'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/railtie/configurable.rb:30:in `method_missing'
-	from /home/deploy/graviex/config/environment.rb:5:in `<top (required)>'
+	from /home/deploy/zenbitex/config/environment.rb:5:in `<top (required)>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:229:in `require'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:229:in `block in require'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:214:in `load_dependency'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:229:in `require'
-	from /home/deploy/graviex/config.ru:3:in `block in <main>'
+	from /home/deploy/zenbitex/config.ru:3:in `block in <main>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:55:in `instance_eval'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:55:in `initialize'
-	from /home/deploy/graviex/config.ru:in `new'
-	from /home/deploy/graviex/config.ru:in `<main>'
+	from /home/deploy/zenbitex/config.ru:in `new'
+	from /home/deploy/zenbitex/config.ru:in `<main>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:49:in `eval'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:49:in `new_from_string'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:40:in `parse_file'
@@ -24524,7 +24524,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :intraday_d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:12)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:12)
 DEPRECATION WARNING: The following options in your Dividend.has_many :daily_dividends declaration are deprecated: :order. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -24532,7 +24532,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :daily_divi
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:13)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:13)
   [1m[36mDividend Load (0.9ms)[0m  [1mSELECT `dividends`.* FROM `dividends` WHERE `dividends`.`member_id` = 1 LIMIT 1[0m
   [1m[35mAccount Load (0.9ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1 AND `accounts`.`currency` = 3 ORDER BY `accounts`.`id` ASC LIMIT 1
   [1m[36mCACHE (0.0ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`id` = 1 LIMIT 1[0m  [["id", 1]]
@@ -24552,13 +24552,13 @@ DEPRECATION WARNING: The following options in your Product.has_many :dividends d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Product> at /home/deploy/graviex/app/models/product.rb:3)
+. (called from <class:Product> at /home/deploy/zenbitex/app/models/product.rb:3)
   [1m[36mProduct Load (0.8ms)[0m  [1mSELECT `products`.* FROM `products` WHERE `products`.`name` = 'default' ORDER BY `products`.`id` ASC LIMIT 1[0m
   [1m[35m (0.6ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`require_signin` = 1
   [1m[36m (0.9ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1[0m
 Completed 500 Internal Server Error in 298ms
 
-Psych::SyntaxError ((/home/deploy/graviex/config/withdraw_channels.yml): did not find expected key while parsing a block mapping at line 25 column 3):
+Psych::SyntaxError ((/home/deploy/zenbitex/config/withdraw_channels.yml): did not find expected key while parsing a block mapping at line 25 column 3):
   app/controllers/private/funds_controller.rb:12:in `index'
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
@@ -24572,7 +24572,7 @@ Psych::SyntaxError ((/home/deploy/graviex/config/withdraw_channels.yml): did not
 => Rails 4.0.12 application starting in development on http://0.0.0.0:3000
 => Run `rails server -h` for more startup options
 => Ctrl-C to shutdown server
-A server is already running. Check /home/deploy/graviex/tmp/pids/server.pid.
+A server is already running. Check /home/deploy/zenbitex/tmp/pids/server.pid.
 Exiting
 
 
@@ -24898,7 +24898,7 @@ Completed 200 OK in 75ms (Views: 0.5ms | ActiveRecord: 7.2ms)
 => Rails 4.0.12 application starting in development on http://0.0.0.0:3000
 => Run `rails server -h` for more startup options
 => Ctrl-C to shutdown server
-A server is already running. Check /home/deploy/graviex/tmp/pids/server.pid.
+A server is already running. Check /home/deploy/zenbitex/tmp/pids/server.pid.
 Exiting
 
 
@@ -25032,7 +25032,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :intraday_d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:12)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:12)
 DEPRECATION WARNING: The following options in your Dividend.has_many :daily_dividends declaration are deprecated: :order. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -25040,7 +25040,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :daily_divi
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:13)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:13)
 DEPRECATION WARNING: The following options in your Product.has_many :dividends declaration are deprecated: :conditions. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -25048,7 +25048,7 @@ DEPRECATION WARNING: The following options in your Product.has_many :dividends d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Product> at /home/deploy/graviex/app/models/product.rb:3)
+. (called from <class:Product> at /home/deploy/zenbitex/app/models/product.rb:3)
 Processing by Private::PusherController#auth as */*
   Parameters: {"socket_id"=>"240967.1811722", "channel_name"=>"private-PEA7OEB5SUWTIO"}
   [1m[35mMember Load (1.0ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
@@ -25079,7 +25079,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :intraday_d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:12)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:12)
 DEPRECATION WARNING: The following options in your Dividend.has_many :daily_dividends declaration are deprecated: :order. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -25087,7 +25087,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :daily_divi
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:13)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:13)
 DEPRECATION WARNING: The following options in your Product.has_many :dividends declaration are deprecated: :conditions. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -25095,7 +25095,7 @@ DEPRECATION WARNING: The following options in your Product.has_many :dividends d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Product> at /home/deploy/graviex/app/models/product.rb:3)
+. (called from <class:Product> at /home/deploy/zenbitex/app/models/product.rb:3)
 Processing by Private::FundsController#index as HTML
   [1m[36mMember Load (1.0ms)[0m  [1mSELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1[0m
   [1m[35mAccount Load (1.0ms)[0m  SELECT `accounts`.* FROM `accounts` WHERE `accounts`.`member_id` = 1
@@ -25117,7 +25117,7 @@ Processing by Private::FundsController#index as HTML
   [1m[35m (1.2ms)[0m  SELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1
 Completed 500 Internal Server Error in 193ms
 
-Psych::SyntaxError ((/home/deploy/graviex/config/withdraw_channels.yml): did not find expected key while parsing a block mapping at line 25 column 3):
+Psych::SyntaxError ((/home/deploy/zenbitex/config/withdraw_channels.yml): did not find expected key while parsing a block mapping at line 25 column 3):
   app/controllers/private/funds_controller.rb:12:in `index'
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
@@ -25406,7 +25406,7 @@ Completed 200 OK in 90ms (Views: 0.2ms | ActiveRecord: 6.1ms)
 => Rails 4.0.12 application starting in development on http://0.0.0.0:3000
 => Run `rails server -h` for more startup options
 => Ctrl-C to shutdown server
-A server is already running. Check /home/deploy/graviex/tmp/pids/server.pid.
+A server is already running. Check /home/deploy/zenbitex/tmp/pids/server.pid.
 Exiting
 
 
@@ -25418,7 +25418,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :intraday_d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:12)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:12)
 DEPRECATION WARNING: The following options in your Dividend.has_many :daily_dividends declaration are deprecated: :order. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -25426,7 +25426,7 @@ DEPRECATION WARNING: The following options in your Dividend.has_many :daily_divi
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Dividend> at /home/deploy/graviex/app/models/dividend.rb:13)
+. (called from <class:Dividend> at /home/deploy/zenbitex/app/models/dividend.rb:13)
 DEPRECATION WARNING: The following options in your Product.has_many :dividends declaration are deprecated: :conditions. Please use a scope block instead. For example, the following:
 
     has_many :spam_comments, conditions: { spam: true }, class_name: 'Comment'
@@ -25434,7 +25434,7 @@ DEPRECATION WARNING: The following options in your Product.has_many :dividends d
 should be rewritten as the following:
 
     has_many :spam_comments, -> { where spam: true }, class_name: 'Comment'
-. (called from <class:Product> at /home/deploy/graviex/app/models/product.rb:3)
+. (called from <class:Product> at /home/deploy/zenbitex/app/models/product.rb:3)
 Processing by Private::FundsController#index as HTML
   [1m[35mMember Load (0.8ms)[0m  SELECT `members`.* FROM `members` WHERE `members`.`disabled` = 0 AND `members`.`id` = 1 ORDER BY `members`.`id` ASC LIMIT 1
   [1m[36m (0.6ms)[0m  [1mSELECT SUM(`trades`.`volume`) AS sum_id FROM `trades` WHERE `trades`.`currency` = 3 AND (created_at > '2018-06-09 17:43:57')[0m
@@ -25458,7 +25458,7 @@ Processing by Private::FundsController#index as HTML
   [1m[36m (0.6ms)[0m  [1mSELECT COUNT(*) FROM `two_factors` WHERE `two_factors`.`member_id` = 1 AND `two_factors`.`activated` = 1[0m
 Completed 500 Internal Server Error in 140ms
 
-Psych::SyntaxError ((/home/deploy/graviex/config/withdraw_channels.yml): did not find expected key while parsing a block mapping at line 25 column 3):
+Psych::SyntaxError ((/home/deploy/zenbitex/config/withdraw_channels.yml): did not find expected key while parsing a block mapping at line 25 column 3):
   app/controllers/private/funds_controller.rb:12:in `index'
   lib/middleware/security.rb:11:in `call'
   lib/middleware/i18n_js.rb:9:in `call'
@@ -25495,7 +25495,7 @@ Completed 200 OK in 133ms (Views: 0.3ms | ActiveRecord: 17.8ms)
 => Rails 4.0.12 application starting in development on http://0.0.0.0:3000
 => Run `rails server -h` for more startup options
 => Ctrl-C to shutdown server
-A server is already running. Check /home/deploy/graviex/tmp/pids/server.pid.
+A server is already running. Check /home/deploy/zenbitex/tmp/pids/server.pid.
 Exiting
 
 
@@ -25670,7 +25670,7 @@ Completed 200 OK in 413ms (Views: 96.9ms | ActiveRecord: 18.2ms)
 => Rails 4.0.12 application starting in development on http://0.0.0.0:3000
 => Run `rails server -h` for more startup options
 => Ctrl-C to shutdown server
-A server is already running. Check /home/deploy/graviex/tmp/pids/server.pid.
+A server is already running. Check /home/deploy/zenbitex/tmp/pids/server.pid.
 Exiting
 
 
@@ -30981,8 +30981,8 @@ Completed 200 OK in 169ms (Views: 0.4ms | ActiveRecord: 18.5ms)
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/actionmailer-4.0.12/lib/action_mailer.rb:30:in `<top (required)>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/actionmailer-4.0.12/lib/action_mailer/railtie.rb:1:in `require'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/actionmailer-4.0.12/lib/action_mailer/railtie.rb:1:in `<top (required)>'
-	from /home/deploy/graviex/config/application.rb:6:in `require'
-	from /home/deploy/graviex/config/application.rb:6:in `<top (required)>'
+	from /home/deploy/zenbitex/config/application.rb:6:in `require'
+	from /home/deploy/zenbitex/config/application.rb:6:in `<top (required)>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/commands.rb:74:in `require'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/commands.rb:74:in `block in <top (required)>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/commands.rb:71:in `tap'
@@ -30994,7 +30994,7 @@ Completed 200 OK in 169ms (Views: 0.4ms | ActiveRecord: 18.5ms)
 => Run `rails server -h` for more startup options
 => Ctrl-C to shutdown server
 Exiting
-/home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/i18n-0.9.5/lib/i18n/backend/base.rb:232:in `rescue in load_yml': can not load translations from /home/deploy/graviex/config/locales/server.en.yml: #<Psych::SyntaxError: (/home/deploy/graviex/config/locales/server.en.yml): found a tab character that violate intendation while scanning a plain scalar at line 3587 column 30> (I18n::InvalidLocaleData)
+/home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/i18n-0.9.5/lib/i18n/backend/base.rb:232:in `rescue in load_yml': can not load translations from /home/deploy/zenbitex/config/locales/server.en.yml: #<Psych::SyntaxError: (/home/deploy/zenbitex/config/locales/server.en.yml): found a tab character that violate intendation while scanning a plain scalar at line 3587 column 30> (I18n::InvalidLocaleData)
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/i18n-0.9.5/lib/i18n/backend/base.rb:229:in `load_yml'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/i18n-0.9.5/lib/i18n/backend/base.rb:213:in `load_file'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/i18n-0.9.5/lib/i18n/backend/base.rb:15:in `block in load_translations'
@@ -31007,11 +31007,11 @@ Exiting
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/i18n-0.9.5/lib/i18n.rb:165:in `catch'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/i18n-0.9.5/lib/i18n.rb:165:in `translate'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/enumerize-0.8.0/lib/enumerize/value.rb:17:in `text'
-	from /home/deploy/graviex/config/initializers/string_extend.rb:35:in `block in value_options'
-	from /home/deploy/graviex/config/initializers/string_extend.rb:35:in `map'
-	from /home/deploy/graviex/config/initializers/string_extend.rb:35:in `value_options'
-	from /home/deploy/graviex/app/grids/account_versions_grid.rb:10:in `<class:AccountVersionsGrid>'
-	from /home/deploy/graviex/app/grids/account_versions_grid.rb:1:in `<top (required)>'
+	from /home/deploy/zenbitex/config/initializers/string_extend.rb:35:in `block in value_options'
+	from /home/deploy/zenbitex/config/initializers/string_extend.rb:35:in `map'
+	from /home/deploy/zenbitex/config/initializers/string_extend.rb:35:in `value_options'
+	from /home/deploy/zenbitex/app/grids/account_versions_grid.rb:10:in `<class:AccountVersionsGrid>'
+	from /home/deploy/zenbitex/app/grids/account_versions_grid.rb:1:in `<top (required)>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:424:in `load'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:424:in `block in load_file'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:616:in `new_constants_in'
@@ -31024,7 +31024,7 @@ Exiting
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/engine.rb:464:in `block in eager_load!'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/engine.rb:462:in `each'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/engine.rb:462:in `eager_load!'
-	from /home/deploy/graviex/config/routes.rb:1:in `<top (required)>'
+	from /home/deploy/zenbitex/config/routes.rb:1:in `<top (required)>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:223:in `load'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:223:in `block in load'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:214:in `load_dependency'
@@ -31054,16 +31054,16 @@ Exiting
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/initializable.rb:54:in `run_initializers'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/application.rb:215:in `initialize!'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/railties-4.0.12/lib/rails/railtie/configurable.rb:30:in `method_missing'
-	from /home/deploy/graviex/config/environment.rb:5:in `<top (required)>'
+	from /home/deploy/zenbitex/config/environment.rb:5:in `<top (required)>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:229:in `require'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:229:in `block in require'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:214:in `load_dependency'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/activesupport-4.0.12/lib/active_support/dependencies.rb:229:in `require'
-	from /home/deploy/graviex/config.ru:3:in `block in <main>'
+	from /home/deploy/zenbitex/config.ru:3:in `block in <main>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:55:in `instance_eval'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:55:in `initialize'
-	from /home/deploy/graviex/config.ru:in `new'
-	from /home/deploy/graviex/config.ru:in `<main>'
+	from /home/deploy/zenbitex/config.ru:in `new'
+	from /home/deploy/zenbitex/config.ru:in `<main>'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:49:in `eval'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:49:in `new_from_string'
 	from /home/deploy/.rbenv/versions/2.2.1/lib/ruby/gems/2.2.0/gems/rack-1.5.2/lib/rack/builder.rb:40:in `parse_file'

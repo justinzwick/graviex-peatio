@@ -5,13 +5,13 @@
 
 ko:
   js:
-    brand: CNY
+    brand: USD
     submit: 확인
     funds:
       deposit: 입금
       withdraw: 출금
       currency_name:
-        cny: CNY
+        usd: USD
         btc: BTC
       deposit_cny:
         title: Chinese Yuan Deposit
@@ -64,7 +64,7 @@ ko:
         warning: 경고
         suspect: Suspect
       withdraw_cny:
-        title: CNY출금
+        title: USD출금
         intro: 계좌정보를 작성후 출금금액을 입력하시고 출금신청하세요
         intro_2: 예금주와 회원이름이 동일해야합니다.
         attention: "업무시간: 9:00 - 18:00"

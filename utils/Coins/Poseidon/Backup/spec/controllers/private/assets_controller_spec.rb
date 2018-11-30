@@ -20,7 +20,7 @@ describe Private::AssetsController do
 
       it { should respond_with :ok }
       it { expect(assigns(:btc_account)).to be_nil }
-      it { expect(assigns(:gio_account)).to be_nil }
+      it { expect(assigns(:zbx_account)).to be_nil }
       it { expect(assigns(:doge_account)).to be_nil }
       it { expect(assigns(:ltc_account)).to be_nil }
       #it

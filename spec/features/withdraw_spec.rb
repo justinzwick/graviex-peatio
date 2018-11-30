@@ -14,7 +14,7 @@ describe 'withdraw' do
 
     btc_account = member.get_account(:btc)
     btc_account.update_attributes balance: 1000
-    cny_account = member.get_account(:cny)
+    cny_account = member.get_account(:usd)
     #cny_account.update_attributes balance: 0
 
     @label = 'common address'

@@ -44,7 +44,7 @@ class Order < ActiveRecord::Base
    if member.has_fee_free
      return 0
    end
-   if member.has_gio_deposite_50
+   if member.has_zbx_deposite_50
      @local_fee = config[kind.to_sym]["fee"] / 2.0
      return (@local_fee*100000000.0).round / 100000000.0
    end

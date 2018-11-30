@@ -1,7 +1,7 @@
 .tabbable
   ul.nav.nav-tabs
     li.active: a.btc-proof href="#btc-proof" data-toggle="tab" == t('.verify-btc')
-    li: a.gio-proof href="#gio-proof" data-toggle="tab" == t('.verify-gio')
+    li: a.zbx-proof href="#zbx-proof" data-toggle="tab" == t('.verify-zbx')
     li: a.doge-proof href="#doge-proof" data-toggle="tab" == t('.verify-doge')
     li: a.ltc-proof href="#ltc-proof" data-toggle="tab" == t('.verify-ltc')
     li: a.eth-proof href="#eth-proof" data-toggle="tab" == t('.verify-eth')
@@ -17,13 +17,13 @@
           = @btc_proof.sum
       = render 'liability_data', account: @btc_account, proof: @btc_proof
 
-    #gio-proof.tab-pane:        .trade-wrapper
+    #zbx-proof.tab-pane:        .trade-wrapper
       .assets
-        span.title = t('.gio-assets-total')
+        span.title = t('.zbx-assets-total')
         span.currency
-          == t("currency.icon.gio")
-          = @gio_proof.sum
-      = render 'liability_data', account: @gio_account, proof: @gio_proof
+          == t("currency.icon.zbx")
+          = @zbx_proof.sum
+      = render 'liability_data', account: @zbx_account, proof: @zbx_proof
 
     #doge-proof.tab-pane:        .trade-wrapper
       .assets

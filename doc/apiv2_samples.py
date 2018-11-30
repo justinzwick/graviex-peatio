@@ -30,7 +30,7 @@ signature = hmac.new(
 ).hexdigest()
 
 # 1.2 list markets
-query = 'https://graviex.net/api/v2/markets?' + request + '&signature=' + signature
+query = 'http://zenbitex.com/api/v2/markets?' + request + '&signature=' + signature
 content = urllib2.urlopen(query, context=ctx).read()
 print(content)
 
@@ -41,7 +41,7 @@ print(content)
 # 2. put order
 epoch_time = str(int(time.time())) + '001' # tonce should be different from previous one
 
-request = 'access_key=' + access_key + '&market=giobtc&price=0.000000042&side=sell' + '&tonce=' + epoch_time + '&volume=100.0'
+request = 'access_key=' + access_key + '&market=zbxbtc&price=0.000000042&side=sell' + '&tonce=' + epoch_time + '&volume=100.0'
 message = 'POST|/api/v2/orders|' + request
 
 # 2.1 generate the hash.
@@ -52,7 +52,7 @@ signature = hmac.new(
 ).hexdigest()
 
 # 2.2 put order
-query = 'https://graviex.net/api/v2/orders?' + request
+query = 'http://zenbitex.com/api/v2/orders?' + request
 result = urllib2.Request(query, urllib.urlencode({'signature' : signature})) #there is a trick - we need a POST request, thats why urlencode used
 content = urllib2.urlopen(result, context=ctx).read()
 print(content)

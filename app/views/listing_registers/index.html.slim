@@ -23,10 +23,10 @@
         - t.column "BTT Thread", class: 'col-xs-4' do |x|
           a href='#{x.btt}' target='_blank'
             code.text-info = x.btt.truncate(22)
-        - t.column "Voting GIO Address" do |x|
+        - t.column "Voting ZBX Address" do |x|
           span #{x.address}
         - t.column "Total Votes", class: 'text-right col-xs-2' do |x|
-          a href='http://blockexplorer.gravio.net/address/#{x.address}' target='_blank'
+          a href='http://blockexplorer.zenbitex.com/address/#{x.address}' target='_blank'
             code.text-info = x.amount.nil? ? '0.0000' : "#{'%.4f' % x.amount}"
 
 .div[class="panel panel-default"]
@@ -48,9 +48,9 @@
         - t.column "BTT Thread", class: 'col-xs-4' do |x|
           a href='#{x.btt}' target='_blank'
             code.text-info = x.btt.truncate(22)
-        - t.column "Voting GIO Address" do |x|
+        - t.column "Voting ZBX Address" do |x|
           span #{x.address}
         - t.column "Total Votes", class: 'text-right col-xs-2' do |x|
-          a href='http://blockexplorer.gravio.net/address/#{x.address}' target='_blank'
+          a href='http://blockexplorer.zenbitex.com/address/#{x.address}' target='_blank'
             code.text-info = x.amount.nil? ? '0.0000' : "#{'%.4f' % x.amount}"
 

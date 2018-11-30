@@ -5,13 +5,13 @@
 
 ru_RU:
   js:
-    brand: GRAVIEX
+    brand: ZENBITEX
     submit: Подтвердить
     funds:
       deposit: Пополнить
       withdraw: Вывести
       currency_name:
-        cny: CNY
+        usd: USD
         btc: BTC
       deposit_cny:
         title: Пополнить в китайских юанях
@@ -120,5 +120,5 @@ ru_RU:
     markets:
       market_list:
         all: Все рынки
-        cny: Рынок CNY
+        usd: Рынок USD
         btc: Рынок BTC

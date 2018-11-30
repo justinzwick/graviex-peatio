@@ -514,7 +514,7 @@ class Update:
 		file_data_new = file_data_new.replace("#withdraws_msg1", "withdraws/" + cfg_json["key"] + ":\n          attributes:\n            fund_uid:\n              blank: Please enter your withdrawal address\n              invalid: Invalid withdrawals address, please review.\n              ismine: Please use a new address.\n        #withdraws_msg1")
 		file_data_new = file_data_new.replace("#market1", cfg_json["code"] + ": " + cfg_json["code_name"] + "\n      #market1")
 		file_data_new = file_data_new.replace("#currency", cfg_json["key"] + ":\n      key: " + cfg_json["code_name"] + "\n      code: " + cfg_json["code_name"] + "\n      name: " + cfg_json["name"] + "\n      format: '0,0.0000'\n    #currency")
-		file_data_new = file_data_new.replace("#deposit_channel", cfg_json["key"] + ":\n      key: Block Chain\n      title: " + cfg_json["name"] + " Deposits\n      intro: Deposit " + cfg_json["key"] + " from your own wallet address to GRAVIEX account\n      latency: 1 confirmation\n      transfer: Manual\n      go: Deposit\n    #deposit_channel")
+		file_data_new = file_data_new.replace("#deposit_channel", cfg_json["key"] + ":\n      key: Block Chain\n      title: " + cfg_json["name"] + " Deposits\n      intro: Deposit " + cfg_json["key"] + " from your own wallet address to ZENBITEX account\n      latency: 1 confirmation\n      transfer: Manual\n      go: Deposit\n    #deposit_channel")
 		file_data_new = file_data_new.replace("#private_deposits", cfg_json["key"] + "s:\n        gen_address:\n          require_transaction: it can't generate new address if it hasn't been used.\n      #private_deposits")
 		file_data_new = file_data_new.replace("#withdraws_msgs", cfg_json["key"] + "s:\n        destroy:\n          notice: Withdraw been canceled, frozen balance has returned to your account\n        update:\n          notice: Withdraw request is submit successful, we will process it as soon\n            as possible\n          alert_two_factor: Two-Factor Authentication error\n        new:\n          submit: Submit\n          allin: All-In\n          fund_source_label: Label\n          manage_fund_source: Manage Fund Source\n        create:\n          notice: Withdrawal request successfully submitted. Use the info below to\n            complete the bank transfer.\n      #withdraws_msgs")
 		file_data_new = file_data_new.replace("#assets", cfg_json["code"] + "-assets: " + cfg_json["code_name"] + " Assets\n        #assets")
@@ -596,9 +596,9 @@ class Db:
 	def CreateQuery(self, cfg_json, folder, currency_id):
 		coin_update_path = "./Coins/" + cfg_json["name"] + "/" + folder
 		with open(coin_update_path + "/admin_update_accounts.sql", "w+") as f:
-			f.write("use graviex_production;\ninsert into accounts(member_id, currency, balance, locked)\n	select id, " + str(currency_id) + ", 0, 0 from members where id=2 or id=3")
+			f.write("use zenbitex_production;\ninsert into accounts(member_id, currency, balance, locked)\n	select id, " + str(currency_id) + ", 0, 0 from members where id=2 or id=3")
                 with open(coin_update_path + "/update_accounts.sql", "w+") as f:
-                        f.write("use graviex_production;\ninsert into accounts(member_id, currency, balance, locked)\n  select id, " + str(currency_id) + ", 0, 0 from members where id not in (select member_id from accounts where currency=" + str(currency_id) + ")")
+                        f.write("use zenbitex_production;\ninsert into accounts(member_id, currency, balance, locked)\n  select id, " + str(currency_id) + ", 0, 0 from members where id not in (select member_id from accounts where currency=" + str(currency_id) + ")")
 
 if __name__ == '__main__':
 	print "start adding coin"

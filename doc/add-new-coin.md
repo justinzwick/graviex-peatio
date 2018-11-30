@@ -60,7 +60,7 @@ peatio/current/config/locales/
 
 
 #### Other
-If you are changing base currency from CNY to another base fiat currency (e.g. USD): 
+If you are changing base currency from USD to another base fiat currency (e.g. USD): 
 
 * app/controllers/admin/currency_deposits_controller.rb
 * config/locales/banks/en.yml

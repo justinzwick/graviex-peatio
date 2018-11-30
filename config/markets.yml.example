@@ -1,10 +1,23 @@
-- id: btccny
+- id: btcusd
   code: 3
-  #name: BTC/CNY      # default name
+  #name: BTC/USD      # default name
   base_unit: btc
-  quote_unit: cny
+  quote_unit: usd
   #price_group_fixed: 1 # aggregate price levels in orderbook
-  bid: {fee: 0, currency: cny, fixed: 2}
+  bid: {fee: 0, currency: usd, fixed: 2}
   ask: {fee: 0, currency: btc, fixed: 4}
   sort_order: 1
   #visible: false     # default to true
+ - id: ethusd
+  code: 4
+  base_unit: eth
+  quote_unit: usd
+  bid: {fee: 0, currency: usd, fixed: 8}
+  ask: {fee: 0, currency: eth, fixed: 8}
+- id: zbxusd
+  code: 5
+  base_unit: zbx
+  quote_unit: usd
+  bid: {fee: 0, currency: usd, fixed: 8}
+  ask: {fee: 0, currency: zbx, fixed: 8}
+

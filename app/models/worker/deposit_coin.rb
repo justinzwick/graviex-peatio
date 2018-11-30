@@ -64,7 +64,7 @@ module Worker
       return if detail[:category] != "receive"
 
       ActiveRecord::Base.transaction do
-        if channel.key == "gravio" && ListingRequest.where(address: detail[:address]).first
+        if channel.key == "zenbitex" && ListingRequest.where(address: detail[:address]).first
           return if PaymentTransaction::Normal.where(txid: txid, txout: txout).first
 
           tx = PaymentTransaction::Normal.create! \

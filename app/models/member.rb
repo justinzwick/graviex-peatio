@@ -104,7 +104,7 @@ class Member < ActiveRecord::Base
   end
 
   def member_checked_in_key
-    "graviex:member:#{id}:checked_in"
+    "zenbitex:member:#{id}:checked_in"
   end
 
   def default_product
@@ -139,14 +139,14 @@ class Member < ActiveRecord::Base
     Rails.cache.write(member_checked_in_key, false)
   end
 
-  def has_gio_deposite_50
+  def has_zbx_deposite_50
     if dividend != nil and dividend.is_accepted
       return false
     end
 
-    @gio_account = self.accounts.with_currency(:gio).first
-    if @gio_account
-      if @gio_account.balance >= 5000000
+    @zbx_account = self.accounts.with_currency(:zbx).first
+    if @zbx_account
+      if @zbx_account.balance >= 5000000
         return true
       end
     end
@@ -281,7 +281,7 @@ class Member < ActiveRecord::Base
       "app_activated" => self.app_two_factor.activated?,
       "sms_activated" => self.sms_two_factor.activated?,
       "memo" => self.id,
-      "has_gio_deposite_50" => self.has_gio_deposite_50,
+      "has_zbx_deposite_50" => self.has_zbx_deposite_50,
       "state" => self.state,
       "two_fa_require_signin" => self.app_two_factor.require_signin?
     })

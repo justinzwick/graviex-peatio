@@ -1,6 +1,6 @@
 en:
   js:
-    brand: GRAVIEX
+    brand: ZENBITEX
     submit: Submit
     cancel: Cancel
     confirm: Confirm
@@ -57,9 +57,9 @@ en:
       deposit: Deposit
       withdraw: Withdraw
       currency_name:
-        cny: CNY
+        usd: USD
         btc: BTC
-        gio: GIO
+        zbx: ZBX
         doge: DOGE
         ltc: LTC
         eth: ETH
@@ -243,8 +243,8 @@ en:
       deposit_btc:
         title: BTC Deposit
 
-      deposit_gio:
-        title: GIO Deposit
+      deposit_zbx:
+        title: ZBX Deposit
 
       deposit_doge:
         title: DOGE Deposit
@@ -771,8 +771,8 @@ en:
       withdraw_btc:
         title: BTC Withdraw
 
-      withdraw_gio:
-        title: GIO Withdraw
+      withdraw_zbx:
+        title: ZBX Withdraw
 
       withdraw_doge:
         title: DOGE Withdraw
@@ -1251,7 +1251,7 @@ en:
       withdraw_coin:
         intro: Please fill in the address and amount, then submit the form. It will be confirmed in 10 minutes
         withdraw_limit_btc: Withdraw day limit is 2 for an unverified account.
-        withdraw_limit_gio: Withdraw day limit is 5 000 000 for an unverified account.
+        withdraw_limit_zbx: Withdraw day limit is 5 000 000 for an unverified account.
         withdraw_limit_doge: Withdraw day limit is 1 000 000 for an unverified account.
         withdraw_limit_ltc: Withdraw day limit is 1 000 for an unverified account.
         withdraw_limit_eth: Withdraw day limit is 10 for an unverified account.
@@ -1461,9 +1461,9 @@ en:
     markets:
       market_list:
         all: All Market
-        cny: CNY Market
+        usd: USD Market
         btc: BTC Market
-        gio: GIO Market
+        zbx: ZBX Market
         doge: DOGE Market
         ltc: LTC Market
         eth: ETH Market
