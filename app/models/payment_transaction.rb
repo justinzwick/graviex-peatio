@@ -19,10 +19,10 @@ class PaymentTransaction < ActiveRecord::Base
 
   aasm :whiny_transitions => false do
     state :unconfirm, initial: true
-    state :confirming, after_commit: :deposit_accept
-    state :confirmed, after_commit: :deposit_accept
+    state :confirming
+    state :confirmed
 
-    event :check do |e|
+    event :check, after_commit: :deposit_accept do |e|
       before :refresh_confirmations
 
       transitions :from => [:unconfirm, :confirming], :to => :confirming, :guard => :min_confirm?
@@ -39,17 +39,7 @@ class PaymentTransaction < ActiveRecord::Base
   end
 
   def refresh_confirmations
-    if deposit.currency == 'eth' || deposit.currency == 'mix' || deposit.currency == 'aka'
-      raw = CoinRPC[deposit.currency].eth_getTransactionByHash(txid)      
-      if raw == nil
-        raw = CoinRPC[deposit.currency].eth_getTransaction(txid)
-      end
-      self.confirmations = CoinRPC[deposit.currency].eth_blockNumber.to_i(16) - raw[:blockNumber].to_i(16)
-    else
-      raw = CoinRPC[deposit.currency].gettransaction(txid)
-      self.confirmations = raw[:confirmations]
-    end
-    save!
+    update!(confirmations: deposit.currency.api.load_deposit!(txid).fetch(:confirmations))
   end
 
   def deposit_accept
@@ -66,3 +56,30 @@ class PaymentTransaction < ActiveRecord::Base
     end
   end
 end
+
+# == Schema Information
+# Schema version: 20180227163417
+#
+# Table name: payment_transactions
+#
+#  id            :integer          not null, primary key
+#  txid          :string(255)
+#  amount        :decimal(32, 16)
+#  confirmations :integer
+#  address       :string(255)
+#  state         :integer
+#  aasm_state    :string
+#  created_at    :datetime
+#  updated_at    :datetime
+#  receive_at    :datetime
+#  dont_at       :datetime
+#  currency_id   :integer
+#  type          :string(60)
+#  txout         :integer
+#
+# Indexes
+#
+#  index_payment_transactions_on_currency_id     (currency_id)
+#  index_payment_transactions_on_txid_and_txout  (txid,txout)
+#  index_payment_transactions_on_type            (type)
+#

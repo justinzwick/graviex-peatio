@@ -1,5 +1,6 @@
-Pusher.app_id = ENV['PUSHER_APP']
-Pusher.key    = ENV['PUSHER_KEY']
-Pusher.secret = ENV['PUSHER_SECRET']
-Pusher.host   = ENV['PUSHER_INNER_HOST'] || 'api.pusherapp.com'
-Pusher.port   = ENV['PUSHER_PORT'].present? ? ENV['PUSHER_PORT'].to_i : 80
+Pusher.app_id = ENV.fetch('PUSHER_APP')
+Pusher.key    = ENV.fetch('PUSHER_CLIENT_KEY')
+Pusher.secret = ENV.fetch('PUSHER_SECRET')
+Pusher.host   = ENV.fetch('PUSHER_HOST')
+Pusher.scheme = ENV.fetch('PUSHER_SCHEME')
+Pusher.port   = ENV.fetch('PUSHER_PORT')

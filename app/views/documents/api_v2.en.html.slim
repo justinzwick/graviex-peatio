@@ -9,7 +9,7 @@
     h3 Public/Private API
 
   .panel-body
-    p ZENBITEX API v2 includes both public API and private API.
+    p Peatio API v2 includes both public API and private API.
 
   table.table
     thead
@@ -22,7 +22,7 @@
         td Authentication required
       tr
         td Unlimited
-        td 6000 requests/keypair/5minutes, you can contact ZENBITEX if you need more.
+        td 6000 requests/keypair/5minutes, you can contact Peatio if you need more.
       tr
         td Ready to use
         td You need to request for access/secret key at first
@@ -56,7 +56,7 @@
         # canonical_query is the request query sorted in alphabetica order, including access_key and tonce, e.g. access_key=xxx&foo=bar&tonce=123456789
         # The combined string looks like: GET|/api/v2/markets|access_key=xxx&foo=bar&tonce=123456789
         def payload
-          "\#{canonical_verb}|\#{canonical_uri}|\#{canonical_query}"
+          "\#{canonical_verb}|\#{canonical_uri}|\#{canonical_params}"
         end
 
     p Note: query parameters are sorted in payload, so it must be "access_key=xxx&foo=bar" not "foo=bar&&access_key=xxx".
@@ -67,20 +67,20 @@
 
     p Now we hav a signed request which can be used like this:
     pre: code
-      | curl -X GET 'http://zenbitex.com/api/v2/markets?access_key=xxx&foo=bar&tonce=123456789&signature=e324059be4491ed8e528aa7b8735af1e96547fbec96db962d51feb7bf1b64dee'
+      | curl -X GET '#{root_url_with_port_from_request}/api/v2/markets?access_key=xxx&foo=bar&tonce=123456789&signature=e324059be4491ed8e528aa7b8735af1e96547fbec96db962d51feb7bf1b64dee'
 
 .panel.panel-default
   .panel-heading
     h3 Response Format
 
   .panel-body
-    p Corresponding HTTP status code will be used in API response. ZENBITEX will also return a JSON structure including error details on failed request, for example:
+    p Corresponding HTTP status code will be used in API response. Peatio will also return a JSON structure including error details on failed request, for example:
     pre: code
       | {"error":{"code":1001,"message":"market does not have a valid value"}}
-    p All errors follow the message format above, only differentiates in code and message. Code is a ZENBITEX defined error code, indicates the error's category, message is human-readable details.
+    p All errors follow the message format above, only differentiates in code and message. Code is a Peatio defined error code, indicates the error's category, message is human-readable details.
 
   .panel-body
-    p ZENBITEX returns HTTP 200 response on successful request, with requested data in JSON format.
+    p Peatio returns HTTP 200 response on successful request, with requested data in JSON format.
     table.table.result
       thead
         tr
@@ -101,25 +101,23 @@
         tr
           td Member
           td: pre: code
-            | {"sn":"PEA5TFFOGQHTIO","name":"foo","email":"foo@mail.dev","activated":true,"accounts":[{"currency":"usd","balance":"1002.0","locked":"0.0"},{"currency":"btc","balance":"8.26","locked":"0.8"}]}
+            | {"sn":"PEA5TFFOGQHTIO","email":"foo@peatio.dev","activated":true,"accounts":[{"currency":"#{Peatio.base_fiat_ccy}","balance":"100243840.0","locked":"0.0"},{"currency":"btc","balance":"99999708.26","locked":"210.8"}]}
           td
             p sn: Unique identifier of user
-            p name: User name
             p email: User email
-            p activated: Whether user is activated
             p accounts: User's accounts info, see Account
         tr
           td Account
           td: pre: code
-            | {"currency":"usd","balance":"10.0","locked":"0.0"}
+            | {"currency":"#{Peatio.base_fiat_ccy}","balance":"100243840.0","locked":"0.0"}
           td
-            p currency: Account type, like 'btc' or 'usd'
+            p currency: Account type, like 'btc' or '#{Peatio.base_fiat_ccy}'
             p balance: Account balance, exclude locked funds
             p locked: locked funds
         tr
           td Order
           td: pre: code
-            | {"id":7,"side":"sell","price":"3100.0","avg_price":"3101.2","state":"wait","market":"btcusd","created_at":"2014-04-18T02:02:33Z","volume":"100.0","remaining_volume":"89.8","executed_volume":"10.2","trades":[{"id":2,"price":"3100.0","volume":"10.2","market":"btcusd","created_at":"2014-04-18T02:04:49Z","side":"sell"}]}
+            | {"id":7,"side":"sell","price":"3100.0","avg_price":"3101.2","state":"wait","market":"btc#{Peatio.base_fiat_ccy}","created_at":"2014-04-18T02:02:33Z","volume":"100.0","remaining_volume":"89.8","executed_volume":"10.2","trades":[{"id":2,"price":"3100.0","volume":"10.2","market":"btc#{Peatio.base_fiat_ccy}","created_at":"2014-04-18T02:04:49Z","side":"sell"}]}
           td
             p id: Unique order ID
             p side: Buy/Sell
@@ -135,12 +133,12 @@
         tr
           td Trade
           td: pre: code
-            | {"id":2,"price":"3100.0","volume":"10.2","market":"btcusd","created_at":"2014-04-18T02:04:49Z","side":"sell"}
+            | {"id":2,"price":"3100.0","volume":"10.2","market":"btc#{Peatio.base_fiat_ccy}","created_at":"2014-04-18T02:04:49Z","side":"sell"}
           td
             p id: Unique ID
             p price: trade price
             p volume: trade volume
-            p market: the market trade belongs to, like 'btcusd'
+            p market: the market trade belongs to, like 'btc#{Peatio.base_fiat_ccy}'
             p created_at: trade time
         tr
           td OrderBook
@@ -154,74 +152,13 @@
     h3 Some Examples
 
   .panel-body
-    p Buy 1BTC at price 10000USD:
+    p Buy 1BTC at price 4000 #{Peatio.base_fiat_ccy}:
     pre: code
-      | curl -X POST 'http://zenbitex.com/api/v2/orders' -d 'access_key=your_access_key&tonce=1234567&signature=computed_signature&market=btcusd&price=10000&side=buy&volume=1'
+      | curl -X POST '#{root_url_with_port_from_request}/api/v2/orders' -d 'access_key=your_access_key&tonce=1234567&signature=computed_signature&market=btc#{Peatio.base_fiat_ccy}&price=4000&side=buy&volume=1'
 
     p Create multiple orders with a single request:
     pre: code
-      | curl -X POST 'http://zenbitex.com/api/v2/orders/multi' -d 'access_key=your_access_key&tonce=123456789&signature=computed_signature&market=btcusd&orders[][price]=10000&orders[][side]=sell&orders[][volume]=0.5&orders[][price]=3999&orders[][side]=sell&orders[][volume]=0.99'
-
-    p Python script with markets and put order sample:
-    pre: code
-      | import hashlib
-        import hmac
-        import urllib2
-        import urllib
-        import time
-        import ssl
-        
-        access_key = '00000000000000000000000000'
-        secret_key = '00000000000000000000000000'
-        
-        # 0. making ssl context - verify should be turned off
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-        
-        # ------------------
-        # Get markets list
-        # ------------------
-        
-        # 1. list markets
-        epoch_time = str(int(time.time())) + '000'
-        request = 'access_key=' + access_key + '&tonce=' + epoch_time
-        message = 'GET|/api/v2/markets|' + request
-        
-        # 1.1 generate the hash.
-        signature = hmac.new(
-            secret_key,
-            message,
-            hashlib.sha256
-        ).hexdigest()
-        
-        # 1.2 list markets
-        query = 'http://zenbitex.com/api/v2/markets?' + request + '&signature=' + signature
-        content = urllib2.urlopen(query, context=ctx).read()
-        print(content)
-        
-        # ------------------
-        # Put sell order
-        # ------------------
-        
-        # 2. put order
-        epoch_time = str(int(time.time())) + '001' # tonce should be different from previous one
-        
-        request = 'access_key=' + access_key + '&market=zbxbtc&price=0.000000042&side=sell' + '&tonce=' + epoch_time + '&volume=100.0'
-        message = 'POST|/api/v2/orders|' + request
-        
-        # 2.1 generate the hash.
-        signature = hmac.new(
-            secret_key,
-            message,
-            hashlib.sha256
-        ).hexdigest()
-        
-        # 2.2 put order
-        query = 'http://zenbitex.com/api/v2/orders?' + request
-        result = urllib2.Request(query, urllib.urlencode({'signature' : signature})) #there is a trick - we need a POST request, thats why urlencode used
-        content = urllib2.urlopen(result, context=ctx).read()
-        print(content)
+      | curl -X POST '#{root_url_with_port_from_request}/api/v2/orders/multi' -d 'access_key=your_access_key&tonce=123456789&signature=computed_signature&market=btc#{Peatio.base_fiat_ccy}&orders[][price]=4000&orders[][side]=sell&orders[][volume]=0.5&orders[][price]=3999&orders[][side]=sell&orders[][volume]=0.99'
 
 .panel.panel-default
   .panel-heading
@@ -240,9 +177,16 @@
         tr
           td POST /api/v2/orders/clear
           td Cancel all your orders is an asynchronous operation. A success response only means your request has been accepted. The orders in response may or may not have been cancelled yet.
-        tr
-          td GET /api/v2/orders market=all
-          td Ability to get all placed orders for all markets
+
+.panel.panel-default
+  .panel-heading
+    h3 Libraries/Tools
+
+  .panel-body
+    ul
+      li: h4
+        a href='http://github.com/peatio/peatio-client-ruby'
+          | peatio-client-ruby (ruby)
 
 .panel.panel-default
   .panel-heading

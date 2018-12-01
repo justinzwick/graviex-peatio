@@ -14,12 +14,12 @@ module Statistic
 
     column(:member) do |model|
       format(model) do
-        link_to model.account.member.name, member_path(model.member_id)
+        link_to model.account.member.email, member_path(model.member_id)
       end
     end
 
     column :currency do
-      self.account.currency_text
+      account.currency.code.upcase
     end
 
     column(:channel)

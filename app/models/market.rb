@@ -5,8 +5,8 @@
 #
 # ID of market is always in the form "#{B}#{A}". For example, in 'btcusd'
 # market, the commodity pair is `{btc, usd}`. Sellers sell out _btc_ for
-# _cny_, buyers buy in _btc_ with _cny_. _btc_ is the `base_unit`, while
-# _cny_ is the `quote_unit`.
+# _usd_, buyers buy in _btc_ with _usd_. _btc_ is the `base_unit`, while
+# _usd_ is the `quote_unit`.
 
 class Market < ActiveYamlBase
   field :visible, default: true
@@ -58,11 +58,11 @@ class Market < ActiveYamlBase
   end
 
   def ask_currency
-    Currency.find_by_code(ask["currency"])
+    Currency.find_by!(code: ask["currency"])
   end
 
   def bid_currency
-    Currency.find_by_code(bid["currency"])
+    Currency.find_by!(code: bid["currency"])
   end
 
   def scope?(account_or_currency)

@@ -3,7 +3,7 @@ app.controller 'DepositHistoryController', ($scope, $stateParams, $http) ->
   $scope.predicate = '-id'
   @currency = $stateParams.currency
   @account = Account.findBy('currency', @currency)
-  @deposits = @account.deposits().slice(0, 3)
+  @deposits = @account.deposits()
   @newRecord = (deposit) ->
     if deposit.aasm_state == "submitting" then true else false
 
@@ -11,12 +11,11 @@ app.controller 'DepositHistoryController', ($scope, $stateParams, $http) ->
     @deposits.length == 0
 
   @refresh = ->
-    @deposits = @account.deposits().slice(0, 3)
+    @deposits = @account.deposits()
     $scope.$apply()
 
   @cancelDeposit = (deposit) ->
-    deposit_channel = DepositChannel.findBy('currency', deposit.currency)
-    $http.delete("/deposits/#{deposit_channel.resource_name}/#{deposit.id}")
+    $http.delete("/deposits/#{$stateParams.currency}/#{deposit.id}")
       .error (responseText) ->
         $.publish 'flash', { message: responseText }
 

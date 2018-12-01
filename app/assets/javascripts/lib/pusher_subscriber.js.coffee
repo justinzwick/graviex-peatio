@@ -3,7 +3,7 @@ class PusherSubscriber
     pusher_key = $("meta[name=pusher]").attr("content")
     @socket = window.pusher
     @channels = []
-    @subscribeChannels(gon.current_user.sn)
+    @subscribeChannels(gon.user.sn)
 
   release: ->
     @socket.disconnect()
@@ -77,7 +77,6 @@ class WithdrawHandler extends EventHandler
 
   update: (id, attributes) =>
     Withdraw.findBy("id", id).updateAttributes(attributes)
-    #console.log id, attributes
 
   destroy: (id) =>
     Withdraw.destroy(id)
@@ -94,5 +93,3 @@ class DepositAddressHandler extends EventHandler
 
 
 window.PusherSubscriber = PusherSubscriber
-
-

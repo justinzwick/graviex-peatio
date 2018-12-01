@@ -1,83 +1,72 @@
 module Worker
   class WithdrawCoin
-
-    def process(payload, metadata, delivery_info)
+    def process(payload)
       payload.symbolize_keys!
 
-      Withdraw.transaction do
-        withdraw = Withdraw.lock.find payload[:id]
+      Rails.logger.warn { ">>>>> Received request for processing withdraw ##{payload[:id]}." }
 
-        return unless withdraw.processing?
+      withdraw = Withdraw.find_by_id(payload[:id])
 
-        withdraw.whodunnit('Worker::WithdrawCoin') do
-          withdraw.call_rpc
+      unless withdraw
+        Rails.logger.warn { "The withdraw with such ID doesn't exist in database." }
+        return
+      end
+
+      withdraw.with_lock do
+        unless withdraw.processing?
+          Rails.logger.warn { "The withdraw has been already processed. Skipping..." }
+          return
+        end
+
+        if withdraw.destination&.address.blank?
+          Rails.logger.warn { "The destination address doesn't exist. Skipping..." }
+          withdraw.fail!
+          return
+        end
+
+        Rails.logger.warn { "Information: sending #{withdraw.amount.to_s("F")} (fee is #{withdraw.fee.to_s("F")}) #{withdraw.currency.code.upcase} to #{withdraw.destination.address}." }
+
+        api     = withdraw.currency.api
+        balance = api.load_balance!
+
+        if balance < withdraw.sum
+          Rails.logger.warn { "The withdraw failed because wallet balance is not sufficient (wallet balance is #{balance.to_s("F")})." }
+          withdraw.mark_suspect!
+          return
+        end
+
+        pa = withdraw.account.payment_address
+
+        Rails.logger.warn { "Making request to currency API." }
+
+        txid = api.create_withdrawal!(
+          { address: pa.address, secret: pa.secret },
+          { address: withdraw.destination.address },
+          withdraw.amount.to_d
+        )
+        Rails.logger.warn { "The currency API accepted withdraw and assigned transaction ID: #{txid}." }
+
+        Rails.logger.warn { "Updating withdraw state in database." }
+
+        withdraw.whodunnit self.class.name do
+          withdraw.txid    = txid
+          withdraw.done_at = Time.current
+          withdraw.succeed
           withdraw.save!
         end
-      end
 
-      Withdraw.transaction do
-        withdraw = Withdraw.lock.find payload[:id]
+        Rails.logger.warn { "OK." }
 
-        Rails.logger.info "[Withdraw]: " + withdraw.currency
-
-        return unless withdraw.almost_done?
-
+      rescue Exception => e
         begin
-
-          if withdraw.currency == 'eth' || withdraw.currency == 'mix' || withdraw.currency == 'aka'
-            balance = open("#{withdraw.channel.currency_obj.rest}/cgi-bin/total.cgi").read.rstrip.to_f
-            raise Account::BalanceError, 'Insufficient coins' if balance < withdraw.sum
-
-            fee = [withdraw.fee.to_f || withdraw.channel.try(:fee) || 0.0005, 0.1].min
-
-            local_nonce = 0
-            if withdraw.channel.currency_obj.code == "aka"
-              CoinRPC[withdraw.currency].personal_unlockAccount(withdraw.channel.currency_obj.base_account, "", 0)
-              # get nonce
-              local_nonce = CoinRPC[withdraw.currency].eth_getTransactionCount(withdraw.channel.currency_obj.base_account, "latest").to_i(16)
-            else
-              CoinRPC[withdraw.currency].personal_unlockAccount(withdraw.channel.currency_obj.base_account, "", "0x30")
-              # get nonce
-              local_nonce = CoinRPC[withdraw.currency].parity_nextNonce(withdraw.channel.currency_obj.base_account).to_i(16)
-            end
-
-            # calc amount
-            gas_limit = withdraw.channel.currency_obj.gas_limit
-            gas_price = withdraw.channel.currency_obj.gas_price
-            #local_amount = (withdraw.amount * 1e18).to_i - (gas_price * gas_limit)
-
-            txid = CoinRPC[withdraw.currency].eth_sendTransaction(from: withdraw.channel.currency_obj.base_account, to: withdraw.fund_uid, gas: "0x" + gas_limit.to_s(16), gasPrice: "0x" + gas_price.to_s(16), nonce: "0x" + local_nonce.to_s(16), value: "0x" + ((withdraw.amount * 1e18).to_i.to_s(16)))
-          else
-            balance = CoinRPC[withdraw.currency].getbalance.to_d
-            raise Account::BalanceError, 'Insufficient coins' if balance < withdraw.sum
-
-            fee = [withdraw.fee.to_f || withdraw.channel.try(:fee) || 0.0005, 0.1].min
-
-            # CoinRPC[withdraw.currency].settxfee fee
-            @amount = (withdraw.amount*100000000.0).round / 100000000.0
-            txid = CoinRPC[withdraw.currency].sendtoaddress withdraw.channel.currency_obj.base_secret, withdraw.fund_uid, @amount.to_f
-          end
-  
-          withdraw.whodunnit('Worker::WithdrawCoin') do
-            withdraw.update_column :txid, txid
-
-            # withdraw.succeed! will start another transaction, cause
-            # Account after_commit callbacks not to fire
-            withdraw.succeed
-            withdraw.save!
-          end
-        rescue => ex
-          Rails.logger.info "[error]: " + ex.message
-
-          withdraw.whodunnit('Worker::WithdrawCoin') do
-            withdraw.update_column :explanation, ex.message
-            withdraw.save!
-          end
-
+          Rails.logger.error { "Failed to process withdraw. See exception details below." }
+          report_exception(e)
+          Rails.logger.warn { "Setting withdraw state to failed." }
+        ensure
+          withdraw.fail!
+          Rails.logger.warn { "OK." }
         end
-
       end
     end
-
   end
 end

@@ -1,153 +1,93 @@
-require 'date'
+class Currency < ActiveRecord::Base
+  serialize :options, JSON
 
-class Currency < ActiveYamlBase
-  include International
-  include ActiveHash::Associations
+  # NOTE: type column reserved for STI
+  self.inheritance_column = nil
 
-  field :visible, default: true
+  validates :type, inclusion: { in: %w[fiat coin token] }
+  validates :code, presence: true, uniqueness: true
+  validates :symbol, presence: true, length: { maximum: 1 }
+  validates :json_rpc_endpoint, :rest_api_endpoint, length: { maximum: 200 }, url: { allow_blank: true }
+  validates :options, length: { maximum: 1000 }
+  validates :wallet_url_template, :transaction_url_template, length: { maximum: 200 }, url: { allow_blank: true }
+  validates :quick_withdraw_limit, numericality: { greater_than_or_equal_to: 0 }
+  validates :base_factor, numericality: { greater_than_or_equal_to: 1, only_integer: true }
+  validate { errors.add(:options, :invalid) unless Hash === options }
 
-  @last_blocks = 0
-  @local_time = 0
+  after_create { Member.find_each(&:touch_accounts) }
 
-  self.singleton_class.send :alias_method, :all_with_invisible, :all
-  def self.all
-    all_with_invisible.select &:visible
-  end
+  scope :visible, -> { where(visible: true) }
+  scope :all_with_invisible, -> { all }
 
-  def self.enumerize
-    all_with_invisible.inject({}) {|memo, i| memo[i.code.to_sym] = i.id; memo}
-  end
+  scope :coins, -> { where(type: :coin) }
+  scope :fiats, -> { where(type: :fiat) }
 
-  def self.codes
-    @keys ||= all.map &:code
-  end
+  class << self
+    def base_fiat
+      fiats.order(id: :asc).first
+    end
 
-  def self.ids
-    @ids ||= all.map &:id
-  end
+    def codes(options = {})
+      visible.pluck(:code).yield_self do |downcase_codes|
+        case
+          when options.fetch(:bothcase, false)
+            downcase_codes + downcase_codes.map(&:upcase)
+          when options.fetch(:upcase, false)
+            downcase_codes.map(&:upcase)
+          else
+            downcase_codes
+        end
+      end
+    end
 
-  def self.assets(code)
-    find_by_code(code)[:assets]
-  end
+    def coin_codes(options = {})
+      coins.codes(options)
+    end
 
-  def precision
-    self[:precision]
+    def fiat_codes(options = {})
+      fiats.codes(options)
+    end
   end
 
   def api
     raise unless coin?
-    CoinRPC[code]
-  end
-
-  def fiat?
-    not coin?
-  end
-
-  def is_online_cache_key
-    "peatio:hotwallet:#{code}:online"
+    CoinAPI[code]
   end
 
   def balance_cache_key
     "peatio:hotwallet:#{code}:balance"
   end
 
-  def blocks_count_cache_key
-    "peatio:hotwallet:#{code}:blocks"
-  end
-
-  def headers_count_cache_key
-    "peatio:hotwallet:#{code}:headers"
-  end
-
-  def blocktime_cache_key
-    "peatio:hotwallet:#{code}:blocktime"
-  end
-
   def balance
     Rails.cache.read(balance_cache_key) || 0
   end
 
-  def blocks
-    Rails.cache.read(blocks_count_cache_key) || 0
-  end
-
-  def headers
-    Rails.cache.read(headers_count_cache_key) || 0
-  end
-
-  def blocktime
-    Rails.cache.read(blocktime_cache_key) || Time.at(1).to_datetime.strftime("%Y-%m-%d %H:%M:%S")
-  end
-
-  def is_online
-    Rails.cache.read(is_online_cache_key) || "offline"
-  end
-
-  def decimal_digit
-    self.try(:default_decimal_digit) || (fiat? ? 2 : 4)
-  end
-
   def refresh_balance
-    Rails.cache.write(balance_cache_key, api.safe_getbalance) if coin?
+    Rails.cache.write(balance_cache_key, api.load_balance || 'N/A') if coin?
   end
 
-  def refresh_status
-    begin
-      @local_status = api.getblockchaininfo
-      Rails.cache.write(is_online_cache_key, "online")
-    rescue => e
-      Rails.logger.error "[hotwallet/refresh_status/#{code}]: " + e.message + "\n"
-      Rails.cache.write(is_online_cache_key, "offline")
-    end
-
-    if @local_status
-      Rails.logger.info @local_status
-
-      if !@last_blocks
-        @last_blocks = 0
-      end
-
-      if !@local_time
-        @local_time = 0
-      end 
-
-      if @local_status[:mediantime] > 0
-        @local_time = @local_status[:mediantime]
-      end
-
-      if @local_status[:mediantime] == 0 && @local_status[:blocks] > @last_blocks
-        @last_blocks = @local_status[:blocks]
-        @local_time = Time.now.to_i
-      end
-
-      #Rails.logger.info @local_time
-      Rails.cache.write(blocks_count_cache_key, @local_status[:blocks]) if coin?
-      Rails.cache.write(headers_count_cache_key, @local_status[:headers]) if coin?
-      Rails.cache.write(blocktime_cache_key, Time.at(@local_time).to_datetime.strftime("%Y-%m-%d %H:%M:%S")) if coin?
-    end
+  def quick_withdraw_limit
+    self[:quick_withdraw_limit] ||= BigDecimal.new(super.to_s)
   end
 
-  def blockchain_url(txid)
-    raise unless coin?
-    blockchain.gsub('#{txid}', txid.to_s)
+  # Allows to dynamically check value of code:
+  #
+  #   code.btc? # true if code equals to "btc".
+  #   code.xrp? # true if code equals to "xrp".
+  #
+  def code
+    super&.inquiry
   end
 
-  def address_url(address)
-    raise unless coin?
-    self[:address_url].try :gsub, '#{address}', address
+  def code=(code)
+    super(code.to_s.downcase)
   end
 
-  def quick_withdraw_max
-    @quick_withdraw_max ||= BigDecimal.new self[:quick_withdraw_max].to_s
-  end
-
-  def as_json(options = {})
-    {
-      key: key,
-      code: code,
-      coin: coin,
-      blockchain: blockchain
-    }
+  def as_json(*)
+    { code:                     code,
+      coin:                     coin?,
+      fiat:                     fiat?,
+      transaction_url_template: transaction_url_template }
   end
 
   def summary
@@ -155,20 +95,72 @@ class Currency < ActiveYamlBase
     balance = Account.balance_sum(code)
     sum = locked + balance
 
-    coinable = self.coin?
-    hot = coinable ? self.balance : nil
+    coinable = coin?
+    hot = coinable ? balance : nil
 
     {
-      name: self.code.upcase,
+      name: code.upcase,
       sum: sum,
       balance: balance,
       locked: locked,
       coinable: coinable,
-      is_online: is_online,
-      blocks: blocks,
-      headers: headers,
-      blocktime: blocktime,
       hot: hot
     }
   end
+
+  def coin?
+    type == 'coin'
+  end
+
+  def fiat?
+    type == 'fiat'
+  end
+
+  class << self
+    def nested_attr(*names)
+      names.each do |name|
+        name_string = name.to_s
+        define_method(name)              { options[name_string] }
+        define_method(name_string + '?') { options[name_string].present? }
+        define_method(name_string + '=') { |value| options[name_string] = value }
+        define_method(name_string + '!') { options.fetch!(name_string) }
+      end
+    end
+  end
+
+  nested_attr \
+    :api_client,
+    :json_rpc_endpoint,
+    :rest_api_endpoint,
+    :bitgo_test_net,
+    :bitgo_wallet_id,
+    :bitgo_wallet_address,
+    :bitgo_wallet_passphrase,
+    :bitgo_rest_api_root,
+    :bitgo_rest_api_access_token,
+    :wallet_url_template,
+    :transaction_url_template
 end
+
+# == Schema Information
+# Schema version: 20180315185255
+#
+# Table name: currencies
+#
+#  id                   :integer          not null, primary key
+#  code                 :string(30)       not null
+#  symbol               :string(1)        not null
+#  type                 :string(30)       default("coin"), not null
+#  quick_withdraw_limit :decimal(32, 16)  default(0.0), not null
+#  options              :string(1000)     default({}), not null
+#  visible              :boolean          default(TRUE), not null
+#  base_factor          :integer          default(1), not null
+#  precision            :integer          default(8), not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#
+# Indexes
+#
+#  index_currencies_on_code     (code) UNIQUE
+#  index_currencies_on_visible  (visible)
+#

@@ -1,23 +1,19 @@
+require_dependency 'admin/base_controller'
+
 module Admin
   module Withdraws
-    class BaseController < ::Admin::BaseController
-      before_action :find_withdraw, only: [:show, :update, :destroy]
+    class BaseController < BaseController
 
-      def channel
-        @channel ||= WithdrawChannel.find_by_key(self.controller_name.singularize)
-      end
+    protected
 
-      def kls
-        channel.kls
+      def currency
+        Currency.where(type: self.class.name.demodulize.underscore.gsub(/_controller\z/, '').singularize)
+                .find_by_code!(params[:currency])
       end
 
       def find_withdraw
-        w = channel.kls.find(params[:id])
-        self.instance_variable_set("@#{self.controller_name.singularize}", w)
-        if w.may_process? and (w.amount > w.account.locked)
-          flash[:alert] = 'TECH ERROR !!!!'
-          redirect_to action: :index
-        end
+        model     = "::Withdraws::#{self.class.name.demodulize.gsub(/Controller\z/, '').singularize}".constantize
+        @withdraw = model.where(currency: currency).find(params[:id])
       end
     end
   end

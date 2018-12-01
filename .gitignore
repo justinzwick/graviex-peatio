@@ -17,17 +17,16 @@
 
 # Ignore all logfiles and tempfiles.
 log
+*.log
 tmp
-hup.out
+
 # Ignore all config files
 /config/application.yml
-/config/database.yml
-/config/slack.yml
-/config/currencies.yml
 /config/markets.yml
-/config/amqp.yml
-/config/banks.yml
-/config/nginx.conf
+/config/withdraw_channels.yml
+/config/deposit_channels.yml
+/config/plugins.yml
+/config/seed/*
 
 # Ignore translations.js
 /public/javascripts/translations.js
@@ -39,26 +38,14 @@ tags
 # Ignore vim temporary files
 **/*.swp
 **/*.swo
-**/*.1
-**/*.2
-**/*.*_
 
 # Ignore RubyMine files
 .idea
 
 /vendor/bundle
+/vendor/assets/yarn_components
+/vendor/plugins
 .env
-.ruby-version
 .DS_Store
 .agignore
-
-# Ignore specific files
-*.key
-*.crt
-*.csr
-enable_ssl.txt
-run_slanger.sh
-/utils/add_coin_config.json
-/app/models/admin/ability.rb
-.gitignore
-
+**/*.tgz

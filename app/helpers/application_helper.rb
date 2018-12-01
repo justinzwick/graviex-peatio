@@ -1,12 +1,4 @@
 module ApplicationHelper
-  def document_to(key: nil, title: nil, &block)
-    if title
-      link_to(title, '', :data => {:remote => "#{main_app.document_path(key)}", :toggle => "modal", :target => '#document_modal'})
-    elsif block
-      link_to('', :data => {:remote => "#{main_app.document_path(key)}", :toggle => "modal", :target => '#document_modal'}, &block)
-    end
-  end
-
   def detail_section_tag(title)
     content_tag('span', title, :class => 'detail-section') + \
     tag('hr')
@@ -80,7 +72,7 @@ module ApplicationHelper
     class_name = ((market.id == current_market.id) ? 'active' : nil)
 
     content_tag(:li, :class => class_name) do
-      link_to market_path(market.id)  do
+      link_to trading_path(market.id)  do
         content_tag(:span, market.name)
       end
     end
@@ -182,10 +174,6 @@ module ApplicationHelper
     asset_path("/languages/#{lang}.png")
   end
 
-  def i18n_meta(key)
-    t("#{i18n_controller_path}.#{action_name}.#{key}", default: :"layouts.meta.#{key}")
-  end
-
   def description_for(name, &block)
     content_tag :dl, class: "dl-horizontal dl-#{name}" do
       capture(&block)
@@ -227,23 +215,49 @@ module ApplicationHelper
     if val
       content_tag(:span, 'YES', class: 'label label-success')
     else
-      content_tag(:span, 'NO', class: 'label label-failed')
+      content_tag(:span, 'NO', class: 'label label-danger')
     end
   end
 
-  def format_currency(number, currency, n: nil)
-    currency_obj = Currency.find_by_code(currency.to_s)
-    digit = n || currency_obj.decimal_digit
+  def format_currency(number, currency, digit: 4)
+    currency = Currency.find_by_code!(currency)
     decimal = (number || 0).to_d.round(0, digit)
     decimal = number_with_precision(decimal, precision: digit, delimiter: ',')
-    "<span class='decimal'><small>#{currency_obj.symbol}</small>#{decimal}</span>"
-  end
-
-  def partial_phone_number(member)
-    number = Phonelib.parse(member.phone_number).national
-    mask = number.gsub(/\d/, '*')
-    "#{number.first(3)}#{mask[3,number.size-7]}#{number.last(4)}"
+    "<span class='decimal'><small>#{currency.symbol}</small>#{decimal}</span>"
   end
 
   alias_method :d, :format_currency
+
+  def root_url_with_port_from_request
+    port  = request.env['SERVER_PORT']
+    parts = [request.protocol, request.domain]
+    unless port.blank?
+      parts << if request.ssl?
+         port == '443' ? '' : ":#{port}"
+      else
+        port == '80' ? '' : ":#{port}"
+      end
+    end
+    parts.join('')
+  end
+
+  def custom_stylesheet_link_tag_for(layout)
+    if File.file?(Rails.root.join('public/custom-stylesheets', "#{layout}.css"))
+      tag :link, \
+        rel:   'stylesheet',
+        media: 'screen',
+        href:  "/custom-stylesheets/#{layout}.css"
+    end
+  end
+
+  # Yaroslav Konoplov: I don't use #image_path & #image_url here
+  # since Gon::Jbuilder attaches ActionView::Helpers which behave differently
+  # compared to what ActionController does.
+  def currency_icon_url(currency)
+    if currency.coin?
+      ActionController::Base.helpers.image_url "yarn_components/cryptocurrency-icons/svg/color/#{currency.code}.png"
+    else
+      ActionController::Base.helpers.image_url "yarn_components/currency-flags/src/flags/#{currency.code}.png"
+    end
+  end
 end

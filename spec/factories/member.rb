@@ -1,31 +1,22 @@
-FactoryGirl.define do
-  factory :member, aliases: [:author] do
+FactoryBot.define do
+  factory :member do
     email { Faker::Internet.email }
-    phone_number { Faker::Number.number(12).to_s }
+    level { :unverified }
 
-    trait :activated do
-      activated true
+    trait :verified_identity do
+      after(:create) { |member| member.update_column(:level, :identity_verified) }
     end
 
-    trait :app_two_factor_activated do
-      after :create do |member|
-        member.app_two_factor.active!
-      end
+    trait :verified_phone do
+      after(:create) { |member| member.update_column(:level, :phone_verified) }
     end
 
-    trait :sms_two_factor_activated do
-      after :create do |member|
-        member.sms_two_factor.active!
-      end
+    trait :verified_email do
+      after(:create) { |member| member.update_column(:level, :email_verified) }
     end
 
-    trait :verified do
-      after :create do |member|
-        id_doc = member.id_document
-        id_doc.update attributes_for(:id_document)
-        id_doc.submit!
-        id_doc.approve!
-      end
+    trait :unverified do
+      after(:create) { |member| member.update_column(:level, :unverified) }
     end
 
     trait :admin do
@@ -34,8 +25,6 @@ FactoryGirl.define do
       end
     end
 
-    factory :activated_member, traits: [:activated]
-    factory :verified_member, traits: [:activated, :verified]
-    factory :admin_member, traits: [:admin]
+    factory :admin_member, traits: %i[ admin ]
   end
 end

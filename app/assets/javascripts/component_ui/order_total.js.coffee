@@ -15,6 +15,4 @@
     @setInputValue @value
 
     order.total = @value
-
     @trigger 'place_order::order::updated', order
-    #console.log(order)

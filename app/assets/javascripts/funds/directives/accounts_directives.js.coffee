@@ -1,6 +1,3 @@
-#= require bootstrap
-#= require bootstrap-switch.min
-
 app.directive 'accounts', ->
   return {
     restrict: 'E'
@@ -9,36 +6,18 @@ app.directive 'accounts', ->
     controller: ($scope, $state) ->
       ctrl = @
       @state = $state
-      @initial_state = false
-
-      $scope.accounts = Account.select (item) ->
-        return (parseFloat(item.balance) + parseFloat(item.locked) > 0.0000000001)
-      
-      if $scope.accounts.length == 1 || $scope.accounts.length == 0
-        $scope.accounts = Account.all()
-        @initial_state = true
-
       if window.location.hash == ""
-        @state.transitionTo("deposits.currency", {currency: $scope.accounts[0].currency})
+        @state.transitionTo("deposits.currency", {currency: Account.first().currency})
 
-      $('input[name="showall-checkbox"]').bootstrapSwitch
-        labelText: 'Empty'
-        state: @initial_state
-        handleWidth: 70
-        labelWidth: 70
-        onSwitchChange: (event, state) ->
-          if state
-            $scope.accounts = Account.all()
-          else
-            $scope.accounts = Account.select (item) ->
-              return (parseFloat(item.balance) + parseFloat(item.locked) > 0.0000000001)
-          $scope.$apply()
+      $scope.accounts = Account.all()
 
       # Might have a better way
-      @selectedCurrency = window.location.hash.split('/')[2] || $scope.accounts[0].currency
+      # #/deposits/btc
+      @selectedCurrency = window.location.hash.split('/')[2] || Account.first().currency
       @currentAction = window.location.hash.split('/')[1] || 'deposits'
-
       $scope.currency = @selectedCurrency
+      $scope.currencyLogoStyles = (account) ->
+        'background-image': "url('#{account.currency_icon_url}')"
 
       @isSelected = (currency) ->
         @selectedCurrency == currency

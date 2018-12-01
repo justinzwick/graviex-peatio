@@ -1,123 +1,48 @@
 class SessionsController < ApplicationController
-
-  skip_before_action :verify_authenticity_token, only: [:create]
-
   before_action :auth_member!, only: :destroy
-  before_action :auth_anybody!, only: [:new, :failure]
-  before_action :add_auth_for_weibo
-
-  helper_method :require_captcha?
-
-  def new
-    @identity = Identity.new
-  end
+  before_action :auth_anybody!, only: :failure
 
   def create
+    @member = Member.from_auth(auth_hash)
 
-    is_exists = Member.is_exists(auth_hash)  
-    if !is_exists # signup process
-      if !simple_captcha_valid?
-        Identity.delete(Identity.where(email: auth_hash['info']['email']).first.id)
-        redirect_to signup_path, alert: t('.invalid_captcha')
-        return
-      end
-    end
+    return redirect_on_unsuccessful_sign_in unless @member
+    return redirect_to(root_path, alert: t('.disabled')) if @member.disabled?
 
-    is_valid = true
-    if require_captcha? && is_exists
-      is_valid = simple_captcha_valid?
-    end
- 
-    if is_valid
-      @member = Member.from_auth(auth_hash)
-    end
-
-    if @member
-      if @member.disabled?
-        increase_failed_logins
-        redirect_to signin_path, alert: t('.disabled')
-      else
-        clear_failed_logins
-        reset_session rescue nil
-        session[:member_id] = @member.id
-        save_session_key @member.id, cookies['_peatio_session']
-        save_signup_history @member.id
-        MemberMailer.notify_signin(@member.id).deliver if @member.activated?
-
-        current_user.check_out #reset check-out
-
-        if not current_user.two_factors.activated?
-          redirect_to settings_path, alert: t('two_factors.auth.please_active_two_factor')
-        else
-          if current_user.two_factors.require_signin? && two_factor_locked?(expired_at: ENV['SESSION_EXPIRE'].to_i.minutes)
-            session[:return_to] = market_path(Market.first)
-            redirect_to two_factors_path
-          else
-            current_user.check_in # re-chek-in
-            redirect_to market_path(Market.first)
-          end
-        end
-      end
-    else
-      increase_failed_logins
-      if !is_valid
-        redirect_to signin_path, alert: t('.invalid_captcha')
-      else
-        redirect_to signin_path, alert: t('.error')
-      end
-    end
+    reset_session rescue nil
+    session[:member_id] = @member.id
+    memoize_member_session_id @member.id, session.id
+    redirect_on_successful_sign_in
   end
 
   def failure
-    increase_failed_logins
-    redirect_to signin_path, alert: t('.error')
+    redirect_to root_path, alert: t('.error')
   end
 
   def destroy
-    clear_all_sessions current_user.id
+    destroy_member_sessions(current_user.id)
     reset_session
     redirect_to root_path
   end
 
-  private
-
-  def require_captcha?
-    failed_logins > 3
-  end
-
-  def failed_logins
-    Rails.cache.read(failed_login_key) || 0
-  end
-
-  def increase_failed_logins
-    Rails.cache.write(failed_login_key, failed_logins+1)
-  end
-
-  def clear_failed_logins
-    Rails.cache.delete failed_login_key
-  end
-
-  def failed_login_key
-    "peatio:session:#{request.ip}:failed_logins"
-  end
+private
 
   def auth_hash
-    @auth_hash ||= env["omniauth.auth"]
+    @auth_hash ||= request.env['omniauth.auth']
   end
 
-  def add_auth_for_weibo
-    if current_user && ENV['WEIBO_AUTH'] == "true" && auth_hash.try(:[], :provider) == 'weibo'
-      redirect_to settings_path, notice: t('.weibo_bind_success') if current_user.add_auth(auth_hash)
+  def redirect_on_successful_sign_in
+    "#{params[:provider].to_s.gsub(/(?:_|oauth2)+\z/i, '').upcase}_OAUTH2_REDIRECT_URL".tap do |key|
+      if ENV[key] && params[:provider].to_s == 'barong'
+        redirect_to "#{ENV[key]}?#{auth_hash.fetch('credentials').to_query}"
+      elsif ENV[key]
+        redirect_to ENV[key]
+      else
+        redirect_back_or_settings_page
+      end
     end
   end
 
-  def save_signup_history(member_id)
-      SignupHistory.create(
-      member_id: member_id,
-      ip: request.ip,
-      accept_language: request.headers["Accept-Language"],
-      ua: request.headers["User-Agent"]
-    )
+  def redirect_on_unsuccessful_sign_in
+    redirect_to root_path, alert: t('.error')
   end
-
 end

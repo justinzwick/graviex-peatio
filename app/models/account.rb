@@ -19,33 +19,24 @@ class Account < ActiveRecord::Base
   FUNS = {:unlock_funds => 1, :lock_funds => 2, :plus_funds => 3, :sub_funds => 4, :unlock_and_sub_funds => 5}
 
   belongs_to :member
-  has_many :payment_addresses
+  has_many :payment_addresses, -> { order(id: :asc) }
   has_many :versions, class_name: "::AccountVersion"
   has_many :partial_trees
 
   # Suppose to use has_one here, but I want to store
   # relationship at account side. (Daniel)
-  belongs_to :default_withdraw_fund_source, class_name: 'FundSource'
+  belongs_to :default_withdraw_destination, class_name: 'WithdrawDestination'
 
   validates :member_id, uniqueness: { scope: :currency }
   validates_numericality_of :balance, :locked, greater_than_or_equal_to: ZERO
 
-  scope :enabled, -> { where("currency in (?)", Currency.ids) }
+  scope :enabled, -> { joins(:currency).merge(Currency.where(visible: true)) }
 
   after_commit :trigger, :sync_update
 
   def payment_address
-    if !self.default_address
-      if !payment_addresses.last
-        payment_addresses.create(currency: self.currency)
-        return ""
-      else
-        self.default_address = payment_addresses.last.address
-        update default_address: payment_addresses.last.address
-      end
-    end
-
-    return self.default_address
+    return unless currency.coin?
+    payment_addresses.last&.enqueue_address_generation || payment_addresses.create!(currency: currency)
   end
 
   def self.after(*names)
@@ -80,9 +71,9 @@ class Account < ActiveRecord::Base
   end
 
   def unlock_and_sub_funds(amount, locked: ZERO, fee: ZERO, reason: nil, ref: nil)
-    #raise AccountError, "cannot unlock and subtract funds (amount: #{amount})" if ((amount <= 0) or (amount > locked))
-    #raise LockedError, "invalid lock amount" unless locked
-    #raise LockedError, "invalid lock amount (amount: #{amount}, locked: #{locked}, self.locked: #{self.locked})" if ((locked <= 0) or (locked > self.locked))
+    raise AccountError, "cannot unlock and subtract funds (amount: #{amount})" if ((amount <= 0) or (amount > locked))
+    raise LockedError, "invalid lock amount" unless locked
+    raise LockedError, "invalid lock amount (amount: #{amount}, locked: #{locked}, self.locked: #{self.locked})" if ((locked <= 0) or (locked > self.locked))
     change_balance_and_locked locked-amount, -locked
   end
 
@@ -96,7 +87,7 @@ class Account < ActiveRecord::Base
                      fee: fee,
                      reason: reason,
                      amount: account.amount,
-                     currency: account.currency.to_sym,
+                     currency: account.currency,
                      member_id: account.member_id,
                      account_id: account.id }
 
@@ -109,10 +100,9 @@ class Account < ActiveRecord::Base
 
       locked, balance = compute_locked_and_balance(fun, changed, opts)
       attributes.merge! locked: locked, balance: balance
-
       AccountVersion.optimistically_lock_account_and_create!(account.balance, account.locked, attributes)
     rescue ActiveRecord::StaleObjectError
-      Rails.logger.info "Stale account##{account.id} found when create associated account version, retry."
+      Rails.logger.info { "Stale account##{account.id} found when create associated account version, retry." }
       account = Account.find(account.id)
       raise ActiveRecord::RecordInvalid, account unless account.valid?
       retry
@@ -157,41 +147,9 @@ class Account < ActiveRecord::Base
     return unless member
 
     json = Jbuilder.encode do |json|
-      json.(self, :balance, :locked, :currency, :is_online, :blocks, :headers, :blocktime, :zbx_discount, :coin_home, :coin_btt, :coin_be)
+      json.(self, :balance, :locked, :currency)
     end
     member.trigger('account', json)
-  end
-
-  def coin_home
-    currency_obj.home
-  end
-
-  def coin_btt
-    currency_obj.btt
-  end
-
-  def coin_be
-    currency_obj.be
-  end
-
-  def is_online
-    currency_obj.is_online
-  end
-
-  def blocks
-    currency_obj.blocks
-  end
-
-  def headers
-    currency_obj.headers
-  end
-
-  def blocktime
-    currency_obj.blocktime
-  end
-
-  def zbx_discount
-    member.has_zbx_deposite_50
   end
 
   def change_balance_and_locked(delta_b, delta_l)
@@ -211,25 +169,42 @@ class Account < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).merge({
-      # check if there is a useable address, but don't touch it to create the address now.
-      "deposit_address" => payment_address,
-      "name_text" => currency_obj.name_text,
-      "default_withdraw_fund_source_id" => default_withdraw_fund_source_id,
-      "is_online" => currency_obj.is_online,
-      "blocks" => currency_obj.blocks,
-      "headers" => currency_obj.headers,
-      "blocktime" => currency_obj.blocktime,
-      "zbx_discount" => member.has_zbx_deposite_50,
-      # "coin_home" => currency_obj.home,
-      # "coin_btt" => currency_obj.btt,
-      # "coin_be" => currency_obj.be
+      deposit_address: payment_address&.deposit_address,
+      currency: currency.code,
+      default_withdraw_destination_id: default_withdraw_destination_id
     })
   end
 
   private
 
   def sync_update
-    ::Pusher["private-#{member.sn}"].trigger_async('accounts', { type: 'update', id: self.id, attributes: {balance: balance, locked: locked, zbx_discount: member.has_zbx_deposite_50} })
+    return unless member
+    Pusher["private-#{member.sn}"].trigger_async 'accounts', {
+      id:         id,
+      type:       'update',
+      attributes: { balance: balance, locked: locked }
+    }
   end
 
 end
+
+# == Schema Information
+# Schema version: 20180315145436
+#
+# Table name: accounts
+#
+#  id                              :integer          not null, primary key
+#  member_id                       :integer
+#  currency_id                     :integer
+#  balance                         :decimal(32, 16)
+#  locked                          :decimal(32, 16)
+#  created_at                      :datetime
+#  updated_at                      :datetime
+#  default_withdraw_destination_id :integer
+#
+# Indexes
+#
+#  index_accounts_on_currency_id                (currency_id)
+#  index_accounts_on_member_id                  (member_id)
+#  index_accounts_on_member_id_and_currency_id  (member_id,currency_id)
+#

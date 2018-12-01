@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
 
+require 'erb'
+require 'pathname'
 require 'fileutils'
 
-Dir.glob("config/*.yml.example").each do |example_file|
-  target_file = example_file[0..-9]
+src_root  = Pathname.new(File.expand_path('../../config/templates', __FILE__))
+dest_root = Pathname.new(File.expand_path('../../config', __FILE__))
 
-  if File.exist? target_file
-    puts "Ignore the #{target_file}"
-  else
-    FileUtils.cp example_file, target_file
-    puts "cp #{example_file} #{target_file}"
-  end
+Dir[src_root.join('**/*.erb').to_s].each do |f|
+  dest = dest_root.join(Pathname.new(f).relative_path_from(src_root)).sub(/\.erb\z/, '')
+  FileUtils.mkpath(dest.dirname)
+  puts "Copy #{f} -> #{dest}"
+  File.write(dest, ERB.new(File.read(f)).result)
 end
-

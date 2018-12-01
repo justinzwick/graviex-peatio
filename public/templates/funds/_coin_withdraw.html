@@ -1,4 +1,4 @@
-<form id="btc_withdraw" class="form form-horizontal" ng-controller="WithdrawsController as withdrawsCtrl" ng-submit="withdrawsCtrl.createWithdraw(currency)">
+<form id="withdraw" class="form form-horizontal" ng-controller="WithdrawsController as withdrawsCtrl" ng-submit="withdrawsCtrl.createWithdraw(currency)">
 
   <div class="form-group">
     <div class="col-sm-6">
@@ -22,7 +22,7 @@
       <label class="optional control-label">{{"funds.withdraw_coin.balance" | t}}</label>
     </div>
     <div class="col-sm-12">
-      <p class="form-control-static"><span class="currency-balance" id="withdraw_balance" ng-bind="balance"></span></p>
+      <p class="form-control-static"><span class="currency-balance" id="withdraw_balance">{{balance}}</span></p>
     </div>
   </div>
 
@@ -36,10 +36,7 @@
         <div class="input-group-btn"><button ng-click="withdrawsCtrl.withdrawAll()" class="btn btn-success" id="withdraw_all_btn" type="button">{{"funds.withdraw_coin.withdraw_all" | t}}</button></div>
       </div>
     </div>
-    <span class="col-sm-6 help-block"><a target="_blank" href="https://www.zenbitex.com/blog/graviex-fees-bonuses">{{"funds.withdraw_coin.fee_explain" | t}}</a></span>
   </div>
-
-  <ng-include src="'/templates/funds/_two_factor_auth.html'"></ng-include>
 
   <div class="form-group">
     <div class="form-submit col-sm-18 col-sm-offset-6">
@@ -54,16 +51,19 @@
 
 <table class="table withdraw-history" ng-controller="WithdrawHistoryController as wdCtrl">
   <tr>
+    <th>{{ "funds.withdraw_history.number" | t }}</th>
     <th>{{ "funds.withdraw_history.withdraw_time" | t }}</th>
-    <th>{{ "funds.deposit_history.txid" | t }}</th>
+    <th>{{ "funds.withdraw_history.withdraw_address" | t }}</th>
     <th>{{ "funds.withdraw_history.actual_amount" | t }}</th>
     <th>{{ "funds.withdraw_history.miner_fee" | t }}</th>
     <th>{{ "funds.withdraw_history.state_and_action" | t }}</th>
   </tr>
   <tr ng-repeat="withdraw in wdCtrl.withdraws | orderBy:predicate">
+    <td>{{withdraw.id}}</td>
     <td>{{withdraw.created_at | date:'yyyy-MM-dd HH:mm'}}</td>
     <td>
-      <a href="{{withdraw.blockchain_url}}" target='_blank'>{{(withdraw.txid != null ? withdraw.txid : '...') | truncate: 20}}</a>
+      <a ng-if="withdraw.wallet_url" href="{{withdraw.wallet_url}}" target='_blank'>{{withdraw.destination.address | truncate: 20}}</a>
+      <span ng-if="!withdraw.wallet_url">{{withdraw.destination.address | truncate: 20}}</span>
     </td>
     <td>{{withdraw.amount}}</td>
     <td>{{withdraw.fee}}</td>

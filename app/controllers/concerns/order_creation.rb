@@ -3,8 +3,8 @@ module Concerns
     extend ActiveSupport::Concern
 
     def order_params(order)
-      params[order][:bid] = params[:bid]
-      params[order][:ask] = params[:ask]
+      params[order][:bid] = Currency.find_by(code: params[:bid])&.id
+      params[order][:ask] = Currency.find_by(code: params[:ask])&.id
       params[order][:state] = Order::WAIT
       params[order][:currency] = params[:market]
       params[order][:member_id] = current_user.id
@@ -19,10 +19,10 @@ module Concerns
       begin
         Ordering.new(@order).submit
         render status: 200, json: success_result
-      rescue
-        Rails.logger.warn "Member id=#{current_user.id} failed to submit order: #{$!}"
-        Rails.logger.warn params.inspect
-        Rails.logger.warn $!.backtrace[0,20].join("\n")
+      rescue => e
+        Rails.logger.error { "Member id=#{current_user.id} failed to submit order." }
+        Rails.logger.debug { params.inspect }
+        report_exception(e)
         render status: 500, json: error_result(@order.errors)
       end
     end

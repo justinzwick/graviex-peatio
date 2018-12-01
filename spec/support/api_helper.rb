@@ -1,33 +1,63 @@
-def time_to_milliseconds(t=Time.now)
-  (t.to_f*1000).to_i
+module APITestHelpers
+  extend Memoist
+
+  def api_request(method, url, options = {})
+    headers = options.fetch(:headers, {})
+    params  = options.fetch(:params, {})
+    options[:token].tap { |t| headers['Authorization'] = 'Bearer ' + t if t }
+    send(method, url, params, headers)
+  end
+
+  def api_get(*args)
+    api_request(:get, *args)
+  end
+
+  def api_post(*args)
+    api_request(:post, *args)
+  end
+
+  def api_delete(*args)
+    api_request(:delete, *args)
+  end
+
+  #
+  # Generates valid JWT for member, allows to pass additional payload.
+  #
+  def jwt_for(member, payload = { x: 'x', y: 'y', z: 'z' })
+    jwt_build(payload.merge(email: member.email))
+  end
+
+  #
+  # Generates valid JWT. Accepts payload as argument. Add fields required for JWT to be valid.
+  #
+  def jwt_build(payload)
+    jwt_encode payload.reverse_merge \
+      iat: Time.now.to_i,
+      exp: 20.minutes.from_now.to_i,
+      jti: SecureRandom.uuid,
+      sub: 'session',
+      iss: 'peatio',
+      aud: ['peatio']
+  end
+
+  #
+  # Generates JWT token based on payload. Doesn't add any extra fields to payload.
+  #
+  def jwt_encode(payload)
+    OpenSSL::PKey.read(Base64.urlsafe_decode64(jwt_keypair_encoded[:private])).yield_self do |key|
+      JWT.encode(payload, key, ENV.fetch('JWT_ALGORITHM'))
+    end
+  end
+
+  def jwt_keypair_encoded
+    require 'openssl'
+    require 'base64'
+    OpenSSL::PKey::RSA.generate(2048).yield_self do |p|
+      { public:  Base64.urlsafe_encode64(p.public_key.to_pem),
+        private: Base64.urlsafe_encode64(p.to_pem) }
+    end.tap { |p| ENV['JWT_PUBLIC_KEY'] = p[:public] }
+  end
+  memoize :jwt_keypair_encoded
 end
 
-def sign(secret_key, method, uri, params)
-  req = mock('request', request_method: method.to_s.upcase, path_info: uri)
-  auth = APIv2::Auth::Authenticator.new(req, params)
-  APIv2::Auth::Utils.hmac_signature(secret_key, auth.payload)
-end
-
-def signed_request(method, uri, opts={})
-  token = opts[:token] || create(:api_token)
-  path  = uri.sub(/^\/api/, '')
-
-  params = opts[:params] || {}
-  params[:access_key] = token.access_key
-  params[:tonce]      = time_to_milliseconds
-  params[:signature]  = sign(token.secret_key, method, path, params)
-
-  send method, uri, params
-end
-
-def signed_get(uri, opts={})
-  signed_request :get, uri, opts
-end
-
-def signed_post(uri, opts={})
-  signed_request :post, uri, opts
-end
-
-def signed_delete(uri, opts={})
-  signed_request :delete, uri, opts
-end
+RSpec.configure { |config| config.include APITestHelpers }

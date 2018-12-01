@@ -2,14 +2,18 @@ module Worker
   class Stats
 
     def initialize
-      @redis  = Redis.new url: ENV["REDIS_URL"], db: 1
+      @redis = Redis.new(
+        url: ENV["REDIS_URL"],
+        password: ENV["REDIS_PASSWORD"],
+        db: 1
+      )
     end
 
     def run
       [1, 60, 1440, 10080].each do |period|
         collect period
       end
-      Rails.logger.info "#{self.to_s} collected."
+      Rails.logger.info { "#{self.to_s} collected." }
     end
 
     def to_s

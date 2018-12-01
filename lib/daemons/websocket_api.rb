@@ -1,36 +1,20 @@
-#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-# You might want to change this
-ENV["RAILS_ENV"] ||= "development"
+require File.expand_path('../../config/environment', __dir__)
+require_dependency 'api_v2/websocket_protocol'
 
-root = File.expand_path(File.dirname(__FILE__))
-root = File.dirname(root) until File.exists?(File.join(root, 'config'))
-Dir.chdir(root)
-
-#require 'em-synchrony'
-#require 'em-synchrony/mysql2'
-#require 'em-synchrony/activerecord'
-
-require 'socket'
-require File.join(root, "config", "environment")
-
-#db_config = Rails.configuration.database_configuration[Rails.env].merge(
-  #'adapter' => 'em_mysql2'
-#)
-#ActiveRecord::Base.establish_connection(db_config)
-
-Rails.logger = logger = Logger.new STDOUT
+logger = Rails.logger
 
 EM.error_handler do |e|
-  logger.error "Error: #{e}"
-  logger.error e.backtrace[0,20].join("\n")
+  logger.error { "Error: #{e}" }
+  logger.error { e.backtrace[0,20].join("\n") }
 end
 
 EM.run do
-  conn = AMQP.connect AMQPConfig.connect
-  logger.info "Connected to AMQP broker."
+  conn = Bunny.new AMQPConfig.connect
+  conn.start
 
-  ch = AMQP::Channel.new conn
+  ch = conn.create_channel
   ch.prefetch(1)
 
   config = {host: ENV['WEBSOCKET_HOST'], port: ENV['WEBSOCKET_PORT']}
@@ -43,7 +27,7 @@ EM.run do
   end
 
   EM::WebSocket.run(config) do |ws|
-    logger.debug "New WebSocket connection: #{ws.inspect}"
+    logger.debug { "New WebSocket connection: #{ws.inspect}" }
 
     protocol = ::APIv2::WebSocketProtocol.new(ws, ch, logger)
 
@@ -56,7 +40,7 @@ EM.run do
         end
 
         ws.onpong do |message|
-          logger.debug "pong: #{message}"
+          logger.debug { "pong: #{message}" }
         end
       end
 
@@ -70,16 +54,16 @@ EM.run do
     ws.onerror do |error|
       case error
       when EM::WebSocket::WebSocketError
-        logger.info "WebSocket error: #{$!}"
-        logger.info $!.backtrace[0,20].join("\n")
-        logger.info $!.inspect
+        logger.info { "WebSocket error: #{$!}" }
+        logger.info { $!.backtrace[0,20].join("\n") }
+        logger.info { $!.inspect }
       else
-        logger.info $!
+        logger.info { $! }
       end
     end
 
     ws.onclose do
-      logger.info "WebSocket closed"
+      logger.info { "WebSocket closed" }
     end
   end
 end

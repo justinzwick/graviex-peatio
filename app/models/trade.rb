@@ -56,7 +56,6 @@ class Trade < ActiveRecord::Base
       at:     created_at.to_i,
       price:  price.to_s  || ZERO,
       volume: volume.to_s || ZERO,
-      volume2: (volume * price).to_s || ZERO,
       market: currency
     }
   end
@@ -71,3 +70,31 @@ class Trade < ActiveRecord::Base
     }
   end
 end
+
+# == Schema Information
+# Schema version: 20180227163417
+#
+# Table name: trades
+#
+#  id            :integer          not null, primary key
+#  price         :decimal(32, 16)
+#  volume        :decimal(32, 16)
+#  ask_id        :integer
+#  bid_id        :integer
+#  trend         :integer
+#  currency      :integer
+#  created_at    :datetime
+#  updated_at    :datetime
+#  ask_member_id :integer
+#  bid_member_id :integer
+#  funds         :decimal(32, 16)
+#
+# Indexes
+#
+#  index_trades_on_ask_id         (ask_id)
+#  index_trades_on_ask_member_id  (ask_member_id)
+#  index_trades_on_bid_id         (bid_id)
+#  index_trades_on_bid_member_id  (bid_member_id)
+#  index_trades_on_created_at     (created_at)
+#  index_trades_on_currency       (currency)
+#

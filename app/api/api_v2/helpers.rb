@@ -1,8 +1,25 @@
 module APIv2
   module Helpers
-
     def authenticate!
       current_user or raise AuthorizationError
+    end
+
+    def email_must_be_verified!
+      if current_user.level? && !current_user.level.in?(%w[ email_verified phone_verified identity_verified ])
+        raise Error.new(text: 'Please, verify your E-Mail address.', status: 401)
+      end
+    end
+
+    def phone_must_be_verified!
+      if current_user.level? && !current_user.level.in?(%w[ email_verified phone_verified ])
+        raise Error.new(text: 'Please, verify your phone.', status: 401)
+      end
+    end
+
+    def identity_must_be_verified!
+      if current_user.level? && !current_user.level.identity_verified?
+        raise Error.new(text: 'Please, verify your identity.', status: 401)
+      end
     end
 
     def redis
@@ -10,11 +27,10 @@ module APIv2
     end
 
     def current_user
-      @current_user ||= current_token.try(:member)
-    end
-
-    def current_token
-      @current_token ||= env['api_v2.token']
+      # JWT authentication provides member email.
+      if env.key?('api_v2.authentic_member_email')
+        Member.find_by_email(env['api_v2.authentic_member_email'])
+      end
     end
 
     def current_market
@@ -32,8 +48,8 @@ module APIv2
         source:        'APIv2',
         state:         ::Order::WAIT,
         member_id:     current_user.id,
-        ask:           current_market.base_unit,
-        bid:           current_market.quote_unit,
+        ask:           Currency.find_by!(code: current_market.base_unit).id,
+        bid:           Currency.find_by!(code: current_market.quote_unit).id,
         currency:      current_market.id,
         ord_type:      attrs[:ord_type] || 'limit',
         price:         attrs[:price],
@@ -47,9 +63,9 @@ module APIv2
       Ordering.new(order).submit
       order
     rescue
-      Rails.logger.info "Failed to create order: #{$!}"
-      Rails.logger.debug order.inspect
-      Rails.logger.debug $!.backtrace.join("\n")
+      Rails.logger.info { "Failed to create order: #{$!}" }
+      Rails.logger.debug { order.inspect }
+      Rails.logger.debug { $!.backtrace.join("\n") }
       raise CreateOrderError, $!
     end
 
@@ -58,8 +74,8 @@ module APIv2
       Ordering.new(orders).submit
       orders
     rescue
-      Rails.logger.info "Failed to create order: #{$!}"
-      Rails.logger.debug $!.backtrace.join("\n")
+      Rails.logger.info { "Failed to create order: #{$!}" }
+      Rails.logger.debug { $!.backtrace.join("\n") }
       raise CreateOrderError, $!
     end
 
@@ -75,9 +91,7 @@ module APIv2
           low: ticker[:low],
           high: ticker[:high],
           last: ticker[:last],
-          vol: ticker[:volume],
-          volbtc: ticker[:volume2],
-          change: if ticker[:open] == 0 then 0 else (ticker[:last]-ticker[:open])/ticker[:open] end
+          vol: ticker[:volume]
         }
       }
     end
@@ -86,10 +100,11 @@ module APIv2
       key = "peatio:#{params[:market]}:k:#{params[:period]}"
 
       if params[:timestamp]
-        ts = JSON.parse(redis.lindex(key, 0)).first
+        ts_json = redis.lindex(key, 0)
+        return [] if ts_json.blank?
+        ts = JSON.parse(ts_json).first
         offset = (params[:timestamp] - ts) / 60 / params[:period]
         offset = 0 if offset < 0
-
         JSON.parse('[%s]' % redis.lrange(key, offset, offset + params[:limit] - 1).join(','))
       else
         length = redis.llen(key)
@@ -97,6 +112,5 @@ module APIv2
         JSON.parse('[%s]' % redis.lrange(key, offset, -1).join(','))
       end
     end
-
   end
 end

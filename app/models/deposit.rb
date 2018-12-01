@@ -13,9 +13,8 @@ class Deposit < ActiveRecord::Base
 
   alias_attribute :sn, :id
 
-  delegate :name, to: :member, prefix: true
   delegate :id, to: :channel, prefix: true
-  delegate :coin?, :fiat?, to: :currency_obj
+  delegate :coin?, :fiat?, to: :currency
 
   belongs_to :member
   belongs_to :account
@@ -36,7 +35,7 @@ class Deposit < ActiveRecord::Base
     state :cancelled
     state :submitted
     state :rejected
-    state :accepted, after_commit: [:do, :send_mail, :send_sms]
+    state :accepted
     state :checked
     state :warning
 
@@ -52,7 +51,7 @@ class Deposit < ActiveRecord::Base
       transitions from: :submitted, to: :rejected
     end
 
-    event :accept do
+    event :accept, after_commit: %i[ do send_mail ] do
       transitions from: :submitted, to: :accepted
     end
 
@@ -69,26 +68,8 @@ class Deposit < ActiveRecord::Base
     txid
   end
 
-  class << self
-    def channel
-      DepositChannel.find_by_key(name.demodulize.underscore)
-    end
-
-    def resource_name
-      name.demodulize.underscore.pluralize
-    end
-
-    def params_name
-      name.underscore.gsub('/', '_')
-    end
-
-    def new_path
-      "new_#{params_name}_path"
-    end
-  end
-
   def channel
-    self.class.channel
+    DepositChannel.find_by!(currency: currency.code)
   end
 
   def update_confirmations(data)
@@ -99,60 +80,24 @@ class Deposit < ActiveRecord::Base
     txid && txid.truncate(40)
   end
 
-  private
+  def transaction_url
+    if txid? && currency.transaction_url_template?
+      currency.transaction_url_template.gsub('#{txid}', txid)
+    end
+  end
+
+  def as_json(*)
+    super.merge(transaction_url: transaction_url)
+  end
+
+private
+
   def do
     account.lock!.plus_funds amount, reason: Account::DEPOSIT, ref: self
   end
 
   def send_mail
     DepositMailer.accepted(self.id).deliver if self.accepted?
-  end
-
-  def aggregate_funds
-    # we have aggregate scheme with single address
-    # so we need to thansfer incoming funds to the internal address
-    if channel.currency_obj.base_account != nil
-      if channel.currency_obj.proto == 'ETH'
-        # collect all deposits on the single account
-        payment_tx = PaymentTransaction::Normal.where(txid: txid).first
-        local_nonce = 0
-        if channel.currency_obj.code == "aka"
-          # unlock account
-          CoinRPC[channel.currency_obj.code].personal_unlockAccount(payment_tx.address, "", 0)
-          # get nonce
-          local_nonce = CoinRPC[channel.currency_obj.code].eth_getTransactionCount(payment_tx.address, "latest").to_i(16)
-        else
-          # unlock account
-          CoinRPC[channel.currency_obj.code].personal_unlockAccount(payment_tx.address, "", "0x30")
-          # get nonce
-          local_nonce = CoinRPC[channel.currency_obj.code].parity_nextNonce(payment_tx.address).to_i(16)
-        end
-
-        # calc amount
-        gas_limit = channel.currency_obj.gas_limit
-        gas_price = channel.currency_obj.gas_price
-        local_amount = ((amount - 0.000000001) * 1e18).to_i - (gas_price * gas_limit)
-
-        Rails.logger.info channel.currency_obj.code + " parameters: to=" + channel.currency_obj.base_account + " from=" + payment_tx.address + " depo=" + amount.to_s + " payment=" + local_amount.to_s(10) + " amount=" + (amount * 1e18).to_i.to_s(10)
-        agg_txid = CoinRPC[channel.currency_obj.code].eth_sendTransaction(from: payment_tx.address, to: channel.currency_obj.base_account, gas: "0x" + gas_limit.to_s(16), gasPrice: "0x" + gas_price.to_s(16), nonce: "0x" + local_nonce.to_s(16), value: "0x" + local_amount.to_s(16))
-        Rails.logger.info channel.currency_obj.code + " aggregate: tx=" + agg_txid
-      else
-        agg_txid = CoinRPC[channel.currency_obj.code].sendtoaddress(member.email+member.id.to_s, channel.currency_obj.base_account, amount - CoinRPC[channel.currency_obj.code].getfee(0))
-        Rails.logger.info channel.currency_obj.code + " aggregate: tx=" + agg_txid        
-      end
-    end
-  end
-
-  def send_sms
-    return true if not member.sms_two_factor.activated?
-
-    sms_message = I18n.t('sms.deposit_done', email: member.email,
-                                             currency: currency_text,
-                                             time: I18n.l(Time.now),
-                                             amount: amount,
-                                             balance: account.balance)
-
-    AMQPQueue.enqueue(:sms_notification, phone: member.phone_number, message: sms_message)
   end
 
   def set_fee
@@ -177,3 +122,33 @@ class Deposit < ActiveRecord::Base
     ::Pusher["private-#{member.sn}"].trigger_async('deposits', { type: 'destroy', id: self.id })
   end
 end
+
+# == Schema Information
+# Schema version: 20180227163417
+#
+# Table name: deposits
+#
+#  id                     :integer          not null, primary key
+#  account_id             :integer
+#  member_id              :integer
+#  currency_id            :integer
+#  amount                 :decimal(32, 16)
+#  fee                    :decimal(32, 16)
+#  fund_uid               :string(255)
+#  fund_extra             :string(255)
+#  txid                   :string(255)
+#  state                  :integer
+#  aasm_state             :string
+#  created_at             :datetime
+#  updated_at             :datetime
+#  done_at                :datetime
+#  confirmations          :string(255)
+#  type                   :string(255)
+#  payment_transaction_id :integer
+#  txout                  :integer
+#
+# Indexes
+#
+#  index_deposits_on_currency_id     (currency_id)
+#  index_deposits_on_txid_and_txout  (txid,txout)
+#

@@ -1,7 +1,7 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :order_bid do
-    bid :usd
-    ask :btc
+    bid { Currency.find_by!(code: :usd).id }
+    ask { Currency.find_by!(code: :btc).id }
     currency :btcusd
     state :wait
     source 'Web'
@@ -9,13 +9,13 @@ FactoryGirl.define do
     price { '1'.to_d }
     volume { '1'.to_d }
     origin_volume { volume }
-    locked { price.to_d*volume.to_d }
+    locked { price.to_d * volume.to_d }
     origin_locked { locked }
   end
 
   factory :order_ask do
-    bid :usd
-    ask :btc
+    bid { Currency.find_by!(code: :usd).id }
+    ask { Currency.find_by!(code: :btc).id }
     currency :btcusd
     state :wait
     source 'Web'

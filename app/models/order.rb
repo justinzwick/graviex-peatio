@@ -1,8 +1,6 @@
 class Order < ActiveRecord::Base
   extend Enumerize
 
-  enumerize :bid, in: Currency.enumerize
-  enumerize :ask, in: Currency.enumerize
   enumerize :currency, in: Market.enumerize, scope: true
   enumerize :state, in: {:wait => 100, :done => 200, :cancel => 0}, scope: true
 
@@ -41,15 +39,7 @@ class Order < ActiveRecord::Base
   end
 
   def fee
-   if member.has_fee_free
-     return 0
-   end
-   if member.has_zbx_deposite_50
-     @local_fee = config[kind.to_sym]["fee"] / 2.0
-     return (@local_fee*100000000.0).round / 100000000.0
-   end
- 
-   return config[kind.to_sym]["fee"]
+    config[kind.to_sym]["fee"]
   end
 
   def config
@@ -63,23 +53,6 @@ class Order < ActiveRecord::Base
       json.(self, *ATTRIBUTES)
     end
     member.trigger('order', json)
-  end
-
-  def check_total
-    if member.has_fee_free && volume * price * config[kind.to_sym]["fee"] < 0.000000001
-       Rails.logger.info "check total " + (volume * price * config[kind.to_sym]["fee"] - 0.000000001).to_s + " volume " + volume.to_s + " price " + price.to_s + " fee " + fee.to_s
-       raise "Volume is too small"
-    end
-  end
-
-  def check_fee
-    if member.has_fee_free
-      return
-    end
-    if volume * price * fee < 0.000000001
-       Rails.logger.info "check fee " + (volume * price * fee - 0.000000001).to_s + " volume " + volume.to_s + " price " + price.to_s + " fee " + fee.to_s
-       raise "Fee is too small"
-    end
   end
 
   def strike(trade)
@@ -96,8 +69,6 @@ class Order < ActiveRecord::Base
     expect_account.plus_funds \
       real_add, fee: real_fee,
       reason: Account::STRIKE_ADD, ref: trade
-
-    Rails.logger.info "[trade]: " + "real_fee = " + real_fee.to_s + " fee = " + fee.to_s + " real_add = " + add.to_s + " real_sub = " + real_sub.to_s
 
     self.volume         -= trade.volume
     self.locked         -= real_sub
@@ -123,7 +94,7 @@ class Order < ActiveRecord::Base
   end
 
   def self.head(currency)
-    active.with_currency(currency.downcase).matching_rule.first
+    active.with_currency(currency).matching_rule.first
   end
 
   def at
@@ -184,3 +155,37 @@ class Order < ActiveRecord::Base
   end
 
 end
+
+# == Schema Information
+# Schema version: 20180227163417
+#
+# Table name: orders
+#
+#  id             :integer          not null, primary key
+#  bid            :integer
+#  ask            :integer
+#  currency       :integer
+#  price          :decimal(32, 16)
+#  volume         :decimal(32, 16)
+#  origin_volume  :decimal(32, 16)
+#  state          :integer
+#  done_at        :datetime
+#  type           :string(8)
+#  member_id      :integer
+#  created_at     :datetime
+#  updated_at     :datetime
+#  sn             :string(255)
+#  source         :string           not null
+#  ord_type       :string
+#  locked         :decimal(32, 16)
+#  origin_locked  :decimal(32, 16)
+#  funds_received :decimal(32, 16)  default(0.0)
+#  trades_count   :integer          default(0)
+#
+# Indexes
+#
+#  index_orders_on_currency_and_state   (currency,state)
+#  index_orders_on_member_id            (member_id)
+#  index_orders_on_member_id_and_state  (member_id,state)
+#  index_orders_on_state                (state)
+#

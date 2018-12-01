@@ -1,42 +1,27 @@
-require 'spec_helper'
-
-describe APIv2::Members do
-
+describe APIv2::Members, type: :request do
   let(:member) do
-    create(:verified_member).tap {|m|
+    create(:member, :verified_identity).tap do |m|
       m.get_account(:btc).update_attributes(balance: 12.13,   locked: 3.14)
       m.get_account(:usd).update_attributes(balance: 2014.47, locked: 0)
-    }
+    end
   end
-  let(:token)  { create(:api_token, member: member) }
 
-  describe "GET /members/me" do
-    before { Currency.stubs(:codes).returns(%w(usd btc)) }
+  let(:token) { jwt_for(member) }
 
-    it "should require auth params" do
-      get '/api/v2/members/me'
-      response.code.should == '400'
-      response.body.should == '{"error":{"code":1001,"message":"access_key is missing, tonce is missing, signature is missing"}}'
-    end
-
-    it "should require authentication" do
-      get '/api/v2/members/me', access_key: 'test', tonce: time_to_milliseconds, signature: 'test'
-      response.code.should == '401'
-      response.body.should == '{"error":{"code":2008,"message":"The access key test does not exist."}}'
-    end
-
-    it "should return current user profile with accounts info" do
-      signed_get "/api/v2/members/me", token: token
-      response.should be_success
+  describe 'GET /members/me' do
+    it 'should return current user profile with accounts info' do
+      api_get '/api/v2/members/me', token: token
+      expect(response).to be_success
 
       result = JSON.parse(response.body)
-      result['sn'].should == member.sn
-      result['activated'].should == true
-      result['accounts'].should =~ [
-        {"currency" => "usd", "balance" => "2014.47", "locked" => "0.0"},
-        {"currency" => "btc", "balance" =>"12.13",    "locked" => "3.14"}
+      expect(result['sn']).to eq member.sn
+      expect(result['accounts']).to match [
+        { 'currency' => 'usd', 'balance' => '2014.47', 'locked' => '0.0' },
+        { 'currency' => 'btc', 'balance' => '12.13', 'locked' => '3.14' },
+        { 'currency' => 'dash', 'balance' => '0.0', 'locked' => '0.0' },
+        { 'currency' => 'eth', 'balance' => '0.0', 'locked' => '0.0' },
+        { 'currency' => 'xrp', 'balance' => '0.0', 'locked' => '0.0' }
       ]
     end
   end
-
 end

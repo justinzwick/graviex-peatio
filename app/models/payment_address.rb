@@ -2,16 +2,19 @@ class PaymentAddress < ActiveRecord::Base
   include Currencible
   belongs_to :account
 
-  after_commit :gen_address, on: :create
+  after_commit :enqueue_address_generation
 
   has_many :transactions, class_name: 'PaymentTransaction', foreign_key: 'address', primary_key: 'address'
 
   validates_uniqueness_of :address, allow_nil: true
 
-  def gen_address
-    payload = { payment_address_id: id, currency: currency }
-    attrs   = { persistent: true }
-    AMQPQueue.enqueue(:deposit_coin_address, payload, attrs)
+  serialize :details, JSON
+
+  def enqueue_address_generation
+    if address.blank? && currency.coin?
+      AMQPQueue.enqueue(:deposit_coin_address, { account_id: account.id }, { persistent: true })
+    end
+    self
   end
 
   def memo
@@ -19,7 +22,7 @@ class PaymentAddress < ActiveRecord::Base
   end
 
   def deposit_address
-    currency_obj[:deposit_account] || address
+    currency[:deposit_account] || address
   end
 
   def as_json(options = {})
@@ -52,5 +55,23 @@ class PaymentAddress < ActiveRecord::Base
   def to_json
     {address: deposit_address}
   end
-
 end
+
+# == Schema Information
+# Schema version: 20180303121013
+#
+# Table name: payment_addresses
+#
+#  id          :integer          not null, primary key
+#  account_id  :integer
+#  address     :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
+#  currency_id :integer
+#  secret      :string(255)
+#  details     :string(1024)     default({}), not null
+#
+# Indexes
+#
+#  index_payment_addresses_on_currency_id  (currency_id)
+#

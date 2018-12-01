@@ -1,15 +1,6 @@
-#!/usr/bin/env ruby
+require File.join(ENV.fetch('RAILS_ROOT'), 'config', 'environment')
 
-ENV["RAILS_ENV"] ||= "development"
-
-root = File.expand_path(File.dirname(__FILE__))
-root = File.dirname(root) until File.exists?(File.join(root, 'config'))
-Dir.chdir(root)
-
-require File.join(root, "config", "environment")
-
-Rails.logger = @logger = Logger.new STDOUT
-
+@logger = Rails.logger
 
 $running = true
 Signal.trap("TERM") do
@@ -17,7 +8,6 @@ Signal.trap("TERM") do
 end
 
 workers = []
-workers << Worker::MemberStats.new
 Currency.all.each do |currency|
   workers << Worker::FundStats.new(currency)
   workers << Worker::WalletStats.new(currency)
@@ -32,8 +22,8 @@ while($running) do
     begin
       worker.run
     rescue
-      Rails.logger.error "#{worker.class.name} failed to run: #{$!}"
-      Rails.logger.error $!.backtrace[0,20].join("\n")
+      Rails.logger.error { "#{worker.class.name} failed to run: #{$!}" }
+      Rails.logger.error { $!.backtrace[0,20].join("\n") }
     end
   end
 

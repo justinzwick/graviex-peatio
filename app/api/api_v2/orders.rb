@@ -3,39 +3,30 @@ module APIv2
     helpers ::APIv2::NamedParams
 
     before { authenticate! }
+    before { identity_must_be_verified! }
 
     desc 'Get your orders, results is paginated.', scopes: %w(history trade)
     params do
-      use :auth
-      optional :market, type: String, default: 'btcusd', values: ::Market.all.map(&:id).push('all'), desc: ::APIv2::Entities::Market.documentation[:id]
+      use :market
       optional :state, type: String,  default: 'wait', values: Order.state.values, desc: "Filter order by state, default to 'wait' (active orders)."
       optional :limit, type: Integer, default: 100, range: 1..1000, desc: "Limit the number of returned orders, default to 100."
       optional :page,  type: Integer, default: 1, desc: "Specify the page of paginated results."
       optional :order_by, type: String, values: %w(asc desc), default: 'asc', desc: "If set, returned orders will be sorted in specific order, default to 'asc'."
     end
     get "/orders" do
-      orders = nil
-      if params[:market] == 'all'
-        orders = current_user.orders
-          .order(order_param)
-          .with_state(params[:state])
-          .page(params[:page])
-          .per(params[:limit])
-      else
-        orders = current_user.orders
-          .order(order_param)
-          .with_currency(current_market)
-          .with_state(params[:state])
-          .page(params[:page])
-          .per(params[:limit])
-      end
+      orders = current_user.orders
+        .order(order_param)
+        .with_currency(current_market)
+        .with_state(params[:state])
+        .page(params[:page])
+        .per(params[:limit])
 
       present orders, with: APIv2::Entities::Order
     end
 
     desc 'Get information of specified order.', scopes: %w(history trade)
     params do
-      use :auth, :order_id
+      use :order_id
     end
     get "/order" do
       order = current_user.orders.where(id: params[:id]).first
@@ -45,19 +36,19 @@ module APIv2
 
     desc 'Create multiple sell/buy orders.', scopes: %w(trade)
     params do
-      use :auth, :market
+      use :market
       requires :orders, type: Array do
         use :order
       end
     end
     post "/orders/multi" do
-        orders = create_orders params[:orders]
-        present orders, with: APIv2::Entities::Order
+      orders = create_orders params[:orders]
+      present orders, with: APIv2::Entities::Order
     end
 
     desc 'Create a Sell/Buy order.', scopes: %w(trade)
     params do
-      use :auth, :market, :order
+      use :market, :order
     end
     post "/orders" do
       order = create_order params
@@ -66,7 +57,7 @@ module APIv2
 
     desc 'Cancel an order.', scopes: %w(trade)
     params do
-      use :auth, :order_id
+      use :order_id
     end
     post "/order/delete" do
       begin
@@ -80,7 +71,6 @@ module APIv2
 
     desc 'Cancel all my orders.', scopes: %w(trade)
     params do
-      use :auth
       optional :side, type: String, values: %w(sell buy), desc: "If present, only sell orders (asks) or buy orders (bids) will be canncelled."
     end
     post "/orders/clear" do

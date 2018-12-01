@@ -4,8 +4,8 @@ module Admin
 
     def index
       @search_field = params[:search_field]
-      @search_term = params[:search_term]
-      @members = Member.search(field: @search_field, term: @search_term).page params[:page]
+      @search_term  = params[:search_term]
+      @members      = Member.search(field: @search_field, term: @search_term).page params[:page]
     end
 
     def show
@@ -18,14 +18,7 @@ module Admin
       else
         @member.disabled = !@member.disabled?
       end
-      @member.save
+      @member.save!
     end
-
-    def active
-      @member.update_attribute(:activated, true)
-      @member.save
-      redirect_to admin_member_path(@member)
-    end
-
   end
 end

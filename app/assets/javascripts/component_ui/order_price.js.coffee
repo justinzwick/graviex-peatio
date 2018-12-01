@@ -30,4 +30,3 @@
 
   @after 'initialize', ->
     @on 'focusout', @toggleAlert
-

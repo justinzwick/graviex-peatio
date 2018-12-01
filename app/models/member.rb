@@ -1,50 +1,47 @@
-class Member < ActiveRecord::Base
-  acts_as_taggable
-  acts_as_reader
+require 'securerandom'
 
+class Member < ActiveRecord::Base
   has_many :orders
   has_many :accounts
   has_many :payment_addresses, through: :accounts
-  has_many :withdraws
-  has_many :fund_sources
+  has_many :withdraws, -> { order(id: :desc) }
+  has_many :withdraw_destinations, -> { order(id: :desc) }
   has_many :deposits
-  has_many :api_tokens
-  has_many :two_factors
-  has_many :tickets, foreign_key: 'author_id'
-  has_many :comments, foreign_key: 'author_id'
-  has_many :signup_histories
-
-  has_one :id_document
-
-  has_one :dividend
 
   has_many :authentications, dependent: :destroy
 
   scope :enabled, -> { where(disabled: false) }
 
-  delegate :activated?, to: :two_factors, prefix: true, allow_nil: true
-  delegate :name,       to: :id_document, allow_nil: true
-  delegate :full_name,  to: :id_document, allow_nil: true
-  delegate :verified?,  to: :id_document, prefix: true, allow_nil: true
+  before_validation :sanitize, :assign_sn
 
-  before_validation :sanitize, :generate_sn
+  validates :sn, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: true, email: true
 
-  validates :sn, presence: true
-  validates :display_name, uniqueness: true, allow_blank: true
-  validates :email, email: true, uniqueness: true, allow_nil: true
+  after_create  :touch_accounts
+  after_update  :sync_update
 
-  before_create :build_default_id_document
-  after_create :touch_accounts
-  after_update :resend_activation
-  after_update :sync_update
+  attr_readonly :email
 
   class << self
     def from_auth(auth_hash)
-      locate_auth(auth_hash) || locate_email(auth_hash) || create_from_auth(auth_hash)
-    end
-
-    def is_exists(auth_hash)
-      locate_auth(auth_hash) || locate_email(auth_hash)
+      member = locate_auth(auth_hash) || locate_email(auth_hash) || Member.new
+      member.tap do |member|
+        member.transaction do
+          info_hash       = auth_hash.fetch('info')
+          member.email    = info_hash.fetch('email')
+          member.level    = Member::Levels.get(info_hash['level']) if info_hash.key?('level')
+          member.disabled = info_hash.key?('state') && info_hash['state'] != 'active'
+          member.save!
+          auth = Authentication.locate(auth_hash) || member.authentications.build_auth(auth_hash)
+          auth.token = auth_hash.dig('credentials', 'token')
+          auth.save!
+        end
+      end
+    rescue => e
+      report_exception(e)
+      Rails.logger.debug { "OmniAuth data: #{auth_hash.to_json}." }
+      Rails.logger.debug { "Member: #{member.to_json}." } if member
+      raise e
     end
 
     def current
@@ -60,24 +57,14 @@ class Member < ActiveRecord::Base
     end
 
     def search(field: nil, term: nil)
-      result = case field
-               when 'email'
-                 where('members.email LIKE ?', "%#{term}%")
-               when 'phone_number'
-                 where('members.phone_number LIKE ?', "%#{term}%")
-               when 'name'
-                 joins(:id_document).where('id_documents.name LIKE ?', "%#{term}%")
-               when 'wallet_address'
-                 members = joins(:fund_sources).where('fund_sources.uid' => term)
-                 if members.empty?
-                  members = joins(:payment_addresses).where('payment_addresses.address' => term)
-                 end
-                 members
-               else
-                 all
-               end
-
-      result.order(:id).reverse_order
+      case field
+        when 'email', 'sn'
+          where("members.#{field} LIKE ?", "%#{term}%")
+        when 'wallet_address'
+          joins(:payment_addresses).where('payment_addresses.address LIKE ?', "%#{term}%")
+        else
+          all
+      end.order(:id).reverse_order
     end
 
     private
@@ -87,104 +74,16 @@ class Member < ActiveRecord::Base
     end
 
     def locate_email(auth_hash)
-      return nil if auth_hash['info']['email'].blank?
-      member = find_by_email(auth_hash['info']['email'])
-      return nil unless member
-      member.add_auth(auth_hash)
-      member
+      find_by_email(auth_hash.dig('info', 'email'))
     end
-
-    def create_from_auth(auth_hash)
-      member = create(email: auth_hash['info']['email'], nickname: auth_hash['info']['nickname'],
-                      activated: false)
-      member.add_auth(auth_hash)
-      member.send_activation if auth_hash['provider'] == 'identity'
-      member
-    end
-  end
-
-  def member_checked_in_key
-    "zenbitex:member:#{id}:checked_in"
-  end
-
-  def default_product
-    if dividend.present?
-      return dividend
-    end
-    # binding.pry   
-    product = Product.where(name: 'default').first
-    if !product.nil?
-      self.dividend = Dividend.create(member_id: id, product_id: product.id)
-      self.dividend.save!
-    end
-  end
-
-  def checked_in?
-
-    #touch product
-    default_product
-
-    value = true 
-    if two_factors.require_signin?
-      value = Rails.cache.read(member_checked_in_key) || false
-    end
-    return value
-  end
-
-  def check_in
-    Rails.cache.write(member_checked_in_key, true)
-  end
-
-  def check_out
-    Rails.cache.write(member_checked_in_key, false)
-  end
-
-  def has_zbx_deposite_50
-    if dividend != nil and dividend.is_accepted
-      return false
-    end
-
-    @zbx_account = self.accounts.with_currency(:zbx).first
-    if @zbx_account
-      if @zbx_account.balance >= 5000000
-        return true
-      end
-    end
-    return false
-  end
-
-  def has_fee_free
-    if self.state == 1
-      #Rails.logger.info "HAS fee for " + self.email
-      return true
-    end
-    #Rails.logger.info "NO fee for " + self.email
-    return false
-  end
-
-  def create_auth_for_identity(identity)
-    self.authentications.create(provider: 'identity', uid: identity.id)
   end
 
   def trades
     Trade.where('bid_member_id = ? OR ask_member_id = ?', id, id)
   end
 
-  def active!
-    update activated: true
-  end
-
-  def update_password(password)
-    identity.update password: password, password_confirmation: password
-    send_password_changed_notification
-  end
-
   def admin?
     @is_admin ||= self.class.admins.include?(self.email)
-  end
-
-  def add_auth(auth_hash)
-    authentications.build_auth(auth_hash).save
   end
 
   def trigger(event, data)
@@ -193,43 +92,25 @@ class Member < ActiveRecord::Base
 
   def notify(event, data)
     ::Pusher["private-#{sn}"].trigger_async event, data
-    Rails.logger.info "Member.Notify: private-#{sn} #{event} #{data}"
   end
 
   def to_s
-    "#{name || email} - #{sn}"
+    "#{email} - #{sn}"
   end
 
-  def gravatar
-    "//gravatar.com/avatar/" + Digest::MD5.hexdigest(email.strip.downcase) + "?d=retro"
-  end
-
-  def initial?
-    name? and !name.empty?
-  end
-
-  def get_account(currency)
-    account = accounts.with_currency(currency.to_sym).first
-
-    if account.nil?
-      touch_accounts
-      account = accounts.with_currency(currency.to_sym).first
+  def get_account(model_or_code)
+    accounts.with_currency(model_or_code).first.yield_self do |account|
+      touch_accounts unless account
+      accounts.with_currency(model_or_code).first
     end
-
-    account
   end
   alias :ac :get_account
 
   def touch_accounts
-    less = Currency.codes - self.accounts.map(&:currency).map(&:to_sym)
-    less.each do |code|
-      self.accounts.create(currency: code, balance: 0, locked: 0)
+    Currency.find_each do |currency|
+      next if accounts.where(currency: currency).exists?
+      accounts.create!(currency: currency, balance: 0, locked: 0)
     end
-  end
-
-  def identity
-    authentication = authentications.find_by(provider: 'identity')
-    authentication ? Identity.find(authentication.uid) : nil
   end
 
   def auth(name)
@@ -241,50 +122,17 @@ class Member < ActiveRecord::Base
   end
 
   def remove_auth(name)
-    identity.destroy if name == 'identity'
     auth(name).destroy
-  end
-
-  def send_activation
-    Token::Activation.create(member: self)
-  end
-
-  def send_password_changed_notification
-    MemberMailer.reset_password_done(self.id).deliver
-
-    if sms_two_factor.activated?
-      sms_message = I18n.t('sms.password_changed', email: self.email)
-      AMQPQueue.enqueue(:sms_notification, phone: phone_number, message: sms_message)
-    end
-  end
-
-  def unread_comments
-    ticket_ids = self.tickets.open.collect(&:id)
-    if ticket_ids.any?
-      Comment.where(ticket_id: [ticket_ids]).where("author_id <> ?", self.id).unread_by(self).to_a
-    else
-      []
-    end
-  end
-
-  def app_two_factor
-    two_factors.by_type(:app)
-  end
-
-  def sms_two_factor
-    two_factors.by_type(:sms)
   end
 
   def as_json(options = {})
     super(options).merge({
-      "name" => self.name,
-      "app_activated" => self.app_two_factor.activated?,
-      "sms_activated" => self.sms_two_factor.activated?,
-      "memo" => self.id,
-      "has_zbx_deposite_50" => self.has_zbx_deposite_50,
-      "state" => self.state,
-      "two_fa_require_signin" => self.app_two_factor.require_signin?
+      "memo" => self.id
     })
+  end
+
+  def level
+    self[:level].to_s.inquiry
   end
 
   private
@@ -293,24 +141,37 @@ class Member < ActiveRecord::Base
     self.email.try(:downcase!)
   end
 
-  def generate_sn
-    self.sn and return
+  def assign_sn
+    return unless sn.blank?
     begin
-      self.sn = "PEA#{ROTP::Base32.random_base32(8).upcase}TIO"
-    end while Member.where(:sn => self.sn).any?
+      self.sn = random_sn
+    end while Member.where(sn: self.sn).any?
   end
-
-  def build_default_id_document
-    build_id_document
-    true
+  
+  def random_sn
+    "SN#{SecureRandom.hex(5).upcase}"
   end
-
-  def resend_activation
-    self.send_activation if self.email_changed?
-  end
-
+  
   def sync_update
-    ::Pusher["private-#{sn}"].trigger_async('members', { type: 'update', id: self.id, attributes: self.changes_attributes_as_json })
+    self.trigger('members', { type: 'update', id: self.id, attributes: self.changes_attributes_as_json })
   end
 end
 
+# == Schema Information
+# Schema version: 20180216145412
+#
+# Table name: members
+#
+#  id           :integer          not null, primary key
+#  level        :string(20)       default("")
+#  sn           :string(12)       not null
+#  email        :string(255)      not null
+#  disabled     :boolean          default(FALSE), not null
+#  api_disabled :boolean          default(FALSE), not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+# Indexes
+#
+#  index_members_on_sn  (sn) UNIQUE
+#

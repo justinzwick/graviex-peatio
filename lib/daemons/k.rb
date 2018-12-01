@@ -1,14 +1,6 @@
-#!/usr/bin/env ruby
+require File.join(ENV.fetch('RAILS_ROOT'), "config", "environment")
 
-ENV["RAILS_ENV"] ||= "development"
-
-root = File.expand_path(File.dirname(__FILE__))
-root = File.dirname(root) until File.exists?(File.join(root, 'config'))
-Dir.chdir(root)
-
-require File.join(root, "config", "environment")
-
-Rails.logger = @logger = Logger.new STDOUT
+@logger = Rails.logger
 
 @r ||= KlineDB.redis
 
@@ -50,12 +42,7 @@ def _k1_set(market, start, period)
 end
 
 def k1(market, start)
-  begin
-    trades = Trade.with_currency(market).where('created_at >= ? AND created_at < ?', start, 1.minutes.since(start)).pluck(:price, :volume)
-  rescue
-    return nil
-  end
-
+  trades = Trade.with_currency(market).where('created_at >= ? AND created_at < ?', start, 1.minutes.since(start)).pluck(:price, :volume)
   return nil if trades.count == 0
 
   prices, volumes = trades.transpose
@@ -85,13 +72,11 @@ def append_point(market, period, ts)
   k = key(market, period)
   point = get_point(market, period, ts)
 
-  @logger.info "append #{k}: #{point.to_json}"
+  @logger.info { "append #{k}: #{point.to_json}" }
   @r.rpush k, point.to_json
 
   if period == 1
     # 24*60 = 1440
-    #tnow = DateTime.now
-    #if point = @r.lindex(key(market, period), -(tnow.hour*60+tnow.minute+2))
     if point = @r.lindex(key(market, period), -1441)
       Rails.cache.write "peatio:#{market}:ticker:open", JSON.parse(point)[4]
     end
@@ -102,7 +87,7 @@ def update_point(market, period, ts)
   k = key(market, period)
   point = get_point(market, period, ts)
 
-  @logger.info "update #{k}: #{point.to_json}"
+  @logger.info { "update #{k}: #{point.to_json}" }
   @r.rpop k
   @r.rpush k, point.to_json
 end
@@ -125,17 +110,13 @@ def fill(market, period = 1)
 end
 
 while($running) do
-  begin
-    Market.all.each do |market|
-      ts = next_ts(market.id, 1)
-      next unless ts
+  Market.all.each do |market|
+    ts = next_ts(market.id, 1)
+    next unless ts
 
-      [1, 5, 15, 30, 60, 120, 240, 360, 720, 1440, 4320, 10080].each do |period|
-        fill(market.id, period)
-      end
+    [1, 5, 15, 30, 60, 120, 240, 360, 720, 1440, 4320, 10080].each do |period|
+      fill(market.id, period)
     end
-  rescue => ex
-    Rails.logger.error "[error]: " + ex.message + "\n" + ex.backtrace.join("\n") + "\n"
   end
 
   sleep 15

@@ -3,7 +3,7 @@ namespace :emu do
     if Account.exists?(id)
       id
     else
-      Account.create \
+      Account.create! \
         id: id, email: "user#{id}@emu.com",
         pin: '1234', pin_confirmation: '1234'
       id
@@ -19,8 +19,8 @@ namespace :emu do
   end
 
   def order(id, price, volume, type)
-    Order.create \
-      ask: 'btc', bid: 'usd',
+    Order.create! \
+      ask: 'btc', bid: Peatio.base_fiat_ccy,
       type: type, account: create_account(id),
       price: price, volume: volume, pin: '1234'
   end
@@ -74,7 +74,7 @@ namespace :emu do
       amount = rand(100000)
       confirmations = 100
       receive_at = Time.now
-      channel = DepositChannel.find_by_key a.currency_obj.key
+      channel = DepositChannel.find_by! currency: a.currency.code
       #pt_class = "PaymentTransaction::#{channel.currency.camelize}".constantize
 
       ActiveRecord::Base.transaction do

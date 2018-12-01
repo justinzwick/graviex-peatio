@@ -1,82 +1,95 @@
-require 'spec_helper'
+describe APIv2::Deposits, type: :request do
+  let(:member) { create(:member, :verified_identity) }
+  let(:other_member) { create(:member, :verified_identity) }
+  let(:token) { jwt_for(member) }
+  let(:unverified_member) { create(:member, :unverified) }
+  let(:unverified_member_token) { jwt_for(unverified_member) }
 
-describe APIv2::Deposits do
-
-  let(:member) { create(:member) }
-  let(:other_member) { create(:member) }
-  let(:token)  { create(:api_token, member: member) }
-
-  describe "GET /api/v2/deposits" do
-
+  describe 'GET /api/v2/deposits' do
     before do
-      create(:deposit, member: member, currency: 'btc')
-      create(:deposit, member: member, currency: 'usd')
-      create(:deposit, member: member, currency: 'usd', txid: 1, amount: 520)
-      create(:deposit, member: member, currency: 'btc', created_at: 2.day.ago,  txid: 'test', amount: 111)
-      create(:deposit, member: other_member, currency: 'usd', txid: 10)
+      create(:deposit_btc, member: member)
+      create(:deposit_usd, member: member)
+      create(:deposit_usd, member: member, txid: 1, amount: 520)
+      create(:deposit_btc, member: member, created_at: 2.day.ago, txid: 'test', amount: 111)
+      create(:deposit_usd, member: other_member, txid: 10)
     end
 
-    it "should require deposits authentication" do
-      get '/api/v2/deposits', token: token
-      response.code.should =='401'
+    it 'require deposits authentication' do
+      api_get '/api/v2/deposits'
+      expect(response.code).to eq '401'
     end
 
-    it "login deposits" do
-      signed_get '/api/v2/deposits', token: token
-      response.should be_success
+    it 'login deposits' do
+      api_get '/api/v2/deposits', token: token
+      expect(response).to be_success
     end
 
-    it "deposits num" do
-      signed_get '/api/v2/deposits', token: token
-      JSON.parse(response.body).size.should == 3
+    it 'deposits num' do
+      api_get '/api/v2/deposits', token: token
+      expect(JSON.parse(response.body).size).to eq 3
     end
 
-    it "should return limited deposits" do
-      signed_get '/api/v2/deposits', params: {limit: 1}, token: token
-      JSON.parse(response.body).size.should == 1
+    it 'return limited deposits' do
+      api_get '/api/v2/deposits', params: { limit: 1 }, token: token
+      expect(JSON.parse(response.body).size).to eq 1
     end
 
-    it "should filter deposits by state" do
-      signed_get '/api/v2/deposits', params: {state: 'cancelled'}, token: token
-      JSON.parse(response.body).size.should == 0
+    it 'filter deposits by state' do
+      api_get '/api/v2/deposits', params: { state: 'cancelled' }, token: token
+      expect(JSON.parse(response.body).size).to eq 0
 
-      d = create(:deposit, member: member, currency: 'btc')
+      d = create(:deposit_btc, member: member)
       d.submit!
-      signed_get '/api/v2/deposits', params: {state: 'submitted'}, token: token
+      api_get '/api/v2/deposits', params: { state: 'submitted' }, token: token
       json = JSON.parse(response.body)
-      json.size.should == 1
-      json.first['txid'].should == d.txid
+      expect(json.size).to eq 1
+      expect(json.first['txid']).to eq d.txid
     end
 
-    it "deposits currency usd" do
-      signed_get '/api/v2/deposits', params: {currency: 'usd'}, token: token
+    it 'deposits currency usd' do
+      api_get '/api/v2/deposits', params: { currency: 'usd' }, token: token
       result = JSON.parse(response.body)
-      result.should have(2).deposits
-      result.all? {|d| d['currency'] == 'usd' }.should be_true
+      expect(result.size).to eq 2
+      expect(result.all? { |d| d['currency'] == 'usd' }).to be_truthy
     end
 
-    it "should return 404 if txid not exist" do
-      signed_get '/api/v2/deposit', params: {txid: 5}, token: token
-      response.code.should == '404'
+    it 'return 404 if txid not exist' do
+      api_get '/api/v2/deposit', params: { txid: 5 }, token: token
+      expect(response.code).to eq '404'
     end
 
-    it "should return 404 if txid not belongs_to you " do
-      signed_get '/api/v2/deposit', params: {txid: 10}, token: token
-      response.code.should == '404'
+    it 'return 404 if txid not belongs_to you ' do
+      api_get '/api/v2/deposit', params: { txid: 10 }, token: token
+      expect(response.code).to eq '404'
     end
 
-    it "should ok txid if exist" do
-      signed_get '/api/v2/deposit', params: {txid: 1}, token: token
+    it 'ok txid if exist' do
+      api_get '/api/v2/deposit', params: { txid: 1 }, token: token
 
-      response.code.should == '200'
-      JSON.parse(response.body)['amount'].should == '520.0'
+      expect(response.code).to eq '200'
+      expect(JSON.parse(response.body)['amount']).to eq '520.0'
     end
 
-    it "should return deposit no time limit " do
-      signed_get '/api/v2/deposit', params: {txid: 'test'}, token: token
+    it 'return deposit no time limit ' do
+      api_get '/api/v2/deposit', params: { txid: 'test' }, token: token
 
-      response.code.should == '200'
-      JSON.parse(response.body)['amount'].should == '111.0'
+      expect(response.code).to eq '200'
+      expect(JSON.parse(response.body)['amount']).to eq '111.0'
+    end
+
+    it 'denies access to unverified member' do
+      api_get '/api/v2/deposits', token: unverified_member_token
+      expect(response.code).to eq '401'
+      expect(JSON.parse(response.body)['error']).to eq({'code' => 2000, 'message' => 'Please, verify your identity.'})
+    end
+  end
+
+  describe 'GET /api/v2/deposit_address' do
+    before { member.ac(:btc).payment_address.update!(address: '1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX') }
+
+    it 'doesn\'t expose sensitive data' do
+      api_get '/api/v2/deposit_address', params: { currency: :btc }, token: token
+      expect(response.body).to eq '{"currency":"btc","address":"1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX"}'
     end
   end
 end

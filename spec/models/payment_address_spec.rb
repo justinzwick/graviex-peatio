@@ -1,20 +1,12 @@
-require 'spec_helper'
-
 describe PaymentAddress do
+  context '.create' do
+    let(:member)  { create(:member, :verified_identity) }
+    let!(:account) { member.get_account(:btc) }
 
-  context ".create" do
-    before do
-      PaymentAddress.any_instance.stubs(:id).returns(1)
-    end
-
-    it "generate address after commit" do
+    it 'generate address after commit' do
       AMQPQueue.expects(:enqueue)
-        .with(:deposit_coin_address,
-              {payment_address_id: 1, currency: 'btc'},
-              {persistent: true})
-
-      PaymentAddress.create currency: :btc
+               .with(:deposit_coin_address, { account_id: account.id }, { persistent: true })
+      account.payment_address
     end
   end
-
 end
